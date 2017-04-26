@@ -23,6 +23,8 @@ object parser extends App {
   		case s if s.matches("\\A[0-9].") => println("list declaration")
   		case s if s.matches(".[:].") => println("assignment")
   		case s if s.matches("\\znext!") => println("endblock")
+  		case s if s.matches("\\z?") => println("if statement")
+  		//still need to figure out what the syntax for assignment and while loops will be
   		case _ => println("doesn't match any known line syntax: error")
   	}
 
