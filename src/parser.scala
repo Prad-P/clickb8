@@ -31,14 +31,61 @@ object parser extends App {
   	//to parse the individual vocab
   	line match {
   		case s if s.matches("\\A[0-9].") => println("list declaration")
-  		case s if s.matches(".[:].") => println("assignment")
-  		case s if s.matches("\\znext!") => println("endblock")
-  		case s if s.matches("\\z?") => println("if statement")
-  		//still need to figure out what the syntax for assignment and while loops will be
+  		case s if s.matches(".[:].") => println(parseAssignment(line))
+  		case s if s.matches("\\znext!") => println(parseEndblock(line))
+  		case s if s.matches("\\z?") => println(parseIfStatement(line))
+  		case s if s.matches(".while.") => println(parseWhile(line))
+  		case s if s.matches(".why.") => println(parseDeclaration(line))
   		case _ => println("doesn't match any known line syntax: error")
   	}
 
   	0
+  }
+
+  def parseDeclaration(line:String) : String = {
+  	val lineSplit = line.split(" ")
+  	val temp = 0
+  	while (!lineSplit[temp].equals("why")) {
+  		temp += 1
+  	}
+  	val varName = lineSplit[temp+1]
+  	//gotta do something with the variable name but for now I'm just gonna return it as a string
+  	("variable declared :: " + varName)
+  }
+
+  def parseAssignment(line:String) : String = {
+  	val lineSplit = line.split(" ")
+  	val postColon = line.split(":") // this will take the second half of the string, i.e. the portion that needs to be eval for assignment
+  	val temp = 0
+  	while(!lineSplit[temp].matches("\\z:")) {
+  		temp += 1
+  	}
+  	val varName = lineSplit[temp].substring(0,-1)
+  	//will need a call to a parser to parse the expression
+  	varName
+  }
+
+  def parseEndblock(line:String) : String = {
+  	//this doesn't really do anything yet because it's just an endblock
+  	"endblock"
+  }
+
+  def parseIfStatement(line:String) : String = {
+  	val lineSplit = line.split(" ")
+  	val varName = lineSplit[-1].split("?")[0]
+  	//will just have to pass the boolean variable name to the evaluator which will handle the rest
+  	varName
+  }
+
+  def parseWhile(line:String) : String = {
+  	val lineSplit = line.split(" ")
+  	val temp = 0
+  	while(!lineSplit[temp].equals("while")) {
+  		temp += 1
+  	}
+  	val varName = lineSplit[temp+1]
+  	//same as with If Statement
+  	varName
   }
 
   /*def parseMatch(x:String) : String = x match {
