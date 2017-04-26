@@ -2,10 +2,20 @@ import scala.io.Source
 
 object parser extends App {
   
-  val filename = "resources/program.txt"
+    //contains name of input file
+  var input_file:String = null; 
 
-  for (line <- Source.fromFile(filename).getLines()) {
-    parse(line);
+  try{
+    input_file = args(0);//"resources/program.txt"
+  }
+  catch{
+    case noarg:ArrayIndexOutOfBoundsException=>{println("User failed to provide input file");System.exit(0);}
+  }
+
+  for (line <- Source.fromFile(input_file).getLines()) {
+    //ignore comments
+    if(!line.startsWith("//"))
+      parse(line);
   }
 
   def parse(line:String) : Int = {
