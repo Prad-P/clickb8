@@ -1,4 +1,5 @@
 import scala.io.Source
+import scala.util.matching.Regex
 
 object parser extends App {
   
@@ -29,15 +30,52 @@ object parser extends App {
   	//println(line.length());*/
   	//Curent theory is that we will be able to use this regex match=>case to divide up the parsing into various methods that we can use
   	//to parse the individual vocab
-  	line match {
-  		case s if s.matches("\\A[0-9].") => println(parseListDeclaration(line))
-  		case s if s.matches(".[:].") => println(parseAssignment(line))
-  		case s if s.matches("\\znext!") => println(parseEndblock(line))
-  		case s if s.matches("\\z?") => println(parseIfStatement(line))
-  		case s if s.matches(".while.") => println(parseWhile(line))
-  		case s if s.matches(".why.") => println(parseDeclaration(line))
-  		case _ => println("doesn't match any known line syntax: error")
-  	}
+
+  	val LDPattern = "\\A[0-9].".r
+  	val APattern = ".[:].".r
+  	val EBPattern = "\\znext!".r
+  	val IFPattern = "\\z?".r
+  	val WPattern = ".while.".r
+  	val DPattern = ".*Why.*".r
+
+  	 if(line.matches("([0-9]).*"))
+  	 	println(parseListDeclaration(line));
+
+  	if(line.matches(".*:.*"))
+  		println(parseAssignment(line));
+
+  	if(line.matches(".*next!"))
+  		println(parseEndblock(line));
+
+  	if(line.matches(".*(\\?)"))
+  		println(parseIfStatement(line));
+
+  	if(line.matches(".*(W|w)hile.*"))
+  		println(parseWhile(line));
+
+  	if(line.matches(".*(W|w)hy.*"))
+  		println(parseDeclaration(line));
+
+  	// line match {
+  	// 	case LDPattern(line) => println(parseListDeclaration(line))
+  	// 	case APattern(line) => println(parseAssignment(line))
+  	// 	case EBPattern(line) => println(parseEndblock(line))
+  	// 	case IFPattern(line) => println(parseIfStatement(line))
+  	// 	case WPattern(line) => println(parseWhile(line))
+  	// 	case DPattern(line) => println(parseDeclaration(line))
+  	// 	case _ => println("doesn't match any known line syntax: error")
+  	// }
+
+  	// line match {
+  	// 	case r"\\A[0-9]." => println(parseListDeclaration(line))
+  	// 	case r".[:]." => println(parseAssignment(line))
+  	// 	case r"\\znext!" => println(parseEndblock(line))
+  	// 	case r"\\z?" => println(parseIfStatement(line))
+  	// 	case r".while." => println(parseWhile(line))
+  	// 	case r".why." => println(parseDeclaration(line))
+  	// 	case _ => println("doesn't match any known line syntax: error")
+  	// }
+
 
   	0
   }
@@ -45,7 +83,7 @@ object parser extends App {
   def parseDeclaration(line:String) : String = {
   	val lineSplit = line.split(" ")
   	var temp = 0
-  	while (!lineSplit(temp).equals("why")) {
+  	while (!lineSplit(temp).matches("(W|w)hy")) {
   		temp += 1;
   	}
   	val varName = lineSplit(temp+1)
@@ -57,10 +95,10 @@ object parser extends App {
   	val lineSplit = line.split(" ")
   	val postColon = line.split(":") // this will take the second half of the string, i.e. the portion that needs to be eval for assignment
   	var temp = 0
-  	while(!lineSplit(temp).matches("\\z:")) {
+  	while(!lineSplit(temp).matches(".*:")) {
   		temp += 1;
   	}
-  	val varName = lineSplit(temp).substring(0,-1)
+  	val varName = lineSplit(temp).substring(0,lineSplit(temp).length-1)
   	//will need a call to a parser to parse the expression
   	varName
   }
@@ -72,7 +110,7 @@ object parser extends App {
 
   def parseIfStatement(line:String) : String = {
   	val lineSplit = line.split(" ")
-  	val varName = lineSplit(-1).split("?")(0)
+  	val varName = lineSplit(lineSplit.length-1).split("\\?")(0)
   	//will just have to pass the boolean variable name to the evaluator which will handle the rest
   	varName
   }
@@ -80,7 +118,7 @@ object parser extends App {
   def parseWhile(line:String) : String = {
   	val lineSplit = line.split(" ")
   	var temp = 0
-  	while(!lineSplit(temp).equals("while")) {
+  	while(!lineSplit(temp).matches("(W|w)hile")) {
   		temp += 1;
   	}
   	val varName = lineSplit(temp+1)
