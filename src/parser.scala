@@ -117,7 +117,7 @@ object parser extends App {
   	}
   	val varName = lineSplit(temp).substring(0,lineSplit(temp).length-1)
   	//will need a call to a parser to parse the expression
-  	("Value assigned to :: " + varName + " = " + parseExpression(postColon(1)))
+  	("assign_var," + varName + "," + parseExpression(postColon(1)))
   }
 
   def parseExpression(expr:String) : String = {
@@ -174,7 +174,7 @@ object parser extends App {
   	val lineSplit = line.split(" ")
   	val varName = lineSplit(lineSplit.length-1).split("\\?")(0)
   	//will just have to pass the boolean variable name to the evaluator which will handle the rest
-  	("If statement bool :: " varName)
+  	("If statement bool :: " + varName)
   }
 
   def parseWhile(line:String) : String = {
