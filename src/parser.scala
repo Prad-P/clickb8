@@ -4,7 +4,10 @@ import scala.util.matching.Regex
 object parser extends App {
   
     //contains name of input file
-  var input_file:String = null; 
+  var input_file:String = null;
+
+  val varNameList = new Array[String](1000);
+  var arrIter = 0;
 
   try{
     input_file = args(0);//"resources/program.txt"
@@ -31,14 +34,18 @@ object parser extends App {
   	//Curent theory is that we will be able to use this regex match=>case to divide up the parsing into various methods that we can use
   	//to parse the individual vocab
 
-  	val LDPattern = "\\A[0-9].".r
-  	val APattern = ".[:].".r
-  	val EBPattern = "\\znext!".r
-  	val IFPattern = "\\z?".r
-  	val WPattern = ".while.".r
-  	val DPattern = ".*Why.*".r
+  	// val LDPattern = "\\A[0-9].".r
+  	// val APattern = ".[:].".r
+  	// val EBPattern = "\\znext!".r
+  	// val IFPattern = "\\z?".r
+  	// val WPattern = ".while.".r
+  	// val DPattern = ".*Why.*".r
 
-  	 if(line.matches("([0-9]).*"))
+  	//Possible TODO::
+  	//Figure out how to use the match case in scala with regex so that this bit of code can look nicer
+  	//but it works for now
+
+  	 if(line.matches("^(\\d).*$"))
   	 	println(parseListDeclaration(line));
 
   	if(line.matches(".*:.*"))
@@ -82,13 +89,23 @@ object parser extends App {
 
   def parseDeclaration(line:String) : String = {
   	val lineSplit = line.split(" ")
+  	var vtype = ""
   	var temp = 0
   	while (!lineSplit(temp).matches("(W|w)hy")) {
   		temp += 1;
   	}
   	val varName = lineSplit(temp+1)
+  	val upType = lineSplit(temp+2)
   	//gotta do something with the variable name but for now I'm just gonna return it as a string
-  	("variable declared :: " + varName)
+  	varNameList(arrIter) = varName
+  	arrIter += 1
+  	upType match {
+  		case "Is" => vtype = "Int"
+  		case "Brings" => vtype = "Boolean"
+  		case "Still" => vtype = "String"
+  		case _ => vtype = "null"
+  	}
+  	("declare_var," + varName + "," + vtype)
   }
 
   def parseAssignment(line:String) : String = {
@@ -100,7 +117,52 @@ object parser extends App {
   	}
   	val varName = lineSplit(temp).substring(0,lineSplit(temp).length-1)
   	//will need a call to a parser to parse the expression
-  	varName
+  	("Value assigned to :: " + varName + " = " + parseExpression(postColon(1)))
+  }
+
+  def parseExpression(expr:String) : String = {
+  	val exprSplit = expr.split(" ")
+  	var factorList = new Array[String](2)
+  	var factorLen = 0
+  	var operator:String = null
+  	exprSplit.foreach { i:String =>
+  		if((factorLen < 2) && varNameList.contains(i)) {
+  			factorList(factorLen) = i
+  			factorLen += 1
+  		}
+  		if((factorLen < 2) && i.matches("\\d+")) {
+  			factorList(factorLen) = i
+  			factorLen += 1
+  		}
+  		if((factorLen < 2) && i.matches("LOVE(S)*")) {
+  			factorList(factorLen) = "true"
+  			factorLen += 1
+  		}
+  		if((factorLen < 2) && i.matches("HATE(S)*")) {
+  			factorList(factorLen) = "false"
+  			factorLen += 1
+  		}
+  		if(i.matches("Add")) {
+  			operator = "add"
+  		}
+  		if(i.matches("Stop")) {
+  			operator = "sub"
+  		}
+  		if(i.matches("Common")) {
+  			operator = "mult"
+  		}
+  		if(i.matches("Seperates")) {
+  			operator = "div"
+  		}
+  	}
+  	var token = ""
+  	if(factorLen == 2) {
+  		token = factorList(0) + "," + operator + "," + factorList(1)
+  	}
+  	else {
+  		token = factorList(0)
+  	}
+  	token
   }
 
   def parseEndblock(line:String) : String = {
@@ -112,7 +174,7 @@ object parser extends App {
   	val lineSplit = line.split(" ")
   	val varName = lineSplit(lineSplit.length-1).split("\\?")(0)
   	//will just have to pass the boolean variable name to the evaluator which will handle the rest
-  	varName
+  	("If statement bool :: " varName)
   }
 
   def parseWhile(line:String) : String = {
@@ -123,14 +185,21 @@ object parser extends App {
   	}
   	val varName = lineSplit(temp+1)
   	//same as with If Statement
-  	varName
+  	("While statement bool :: " + varName)
   }
 
   def parseListDeclaration(line:String) : String = {
   	val lineSplit = line.split(" ")
-  	val listLength = lineSplit(0).toInt
+  	val listLength = lineSplit(0)
   	val listName = lineSplit(2)
-  	(listName + ":: length = " + listLength)
+  	val upType = lineSplit(3)
+  	var listType = ""
+  	upType match {
+  		case "Is" => listType = "Int"
+  		case "Brings" => listType = "Boolean"
+  		case "Still" => listType = "String"
+  	}
+  	("declare_list," + listName + "," + listType + "," + listLength)
   }
 
   /*def parseMatch(x:String) : String = x match {
