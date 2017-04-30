@@ -44,15 +44,16 @@ object evaluator extends App{
 		case "declare_list" => println(declare_list(tokens));0;
 		case "declare_var" => println(declare_var(tokens));0;
 		case "assign_list" => println(assign_list(tokens));0;
+		case "assign_var" => println(assign_var(tokens));0;
 		case _ => println("no match :(");-1;
 	}
 
 	//Declarations token(1): list/var name, token(2) = type, (lists only) token(3) = size
 	def declare_list(tokens:Array[String]): Int = tokens(2) match{
 		
-		case "Int" => type_map(tokens(1))= "Int"; integer_lists(tokens(1)) = new Array[Int](tokens(3).toInt);0;
-		case "Boolean" => type_map(tokens(1))= "Boolean"; boolean_lists(tokens(1)) = new Array[Boolean](tokens(3).toInt);0;
-		case "String" => type_map(tokens(1))= "String"; string_lists(tokens(1)) = new Array[String](tokens(3).toInt);0;
+		case "Int" => type_map(tokens(1))= "IntList"; integer_lists(tokens(1)) = new Array[Int](tokens(3).toInt);0;
+		case "Boolean" => type_map(tokens(1))= "BooleanList"; boolean_lists(tokens(1)) = new Array[Boolean](tokens(3).toInt);0;
+		case "String" => type_map(tokens(1))= "StringList"; string_lists(tokens(1)) = new Array[String](tokens(3).toInt);0;
 		case _ => println("no match :(");-1;
 	}
 
@@ -67,16 +68,16 @@ object evaluator extends App{
 	//Direct assignments: tokens(1) = listname, tokens(2) = value tokens(3) = index
 	def assign_list(tokens:Array[String]): Int = type_map(tokens(1)) match{
 
-		case "Int" => integer_lists(tokens(1))(tokens(3).toInt) = tokens(2).toInt;0;
-		case "Boolean" => (boolean_lists(tokens(1)))(tokens(3).toInt) = tokens(2).toBoolean;0;
-		case "String" => (string_lists(tokens(1)))(tokens(3).toInt) = tokens(2);0;
+		case "IntList" => integer_lists(tokens(1))(tokens(3).toInt) = tokens(2).toInt;0;
+		case "BooleanList" => (boolean_lists(tokens(1)))(tokens(3).toInt) = tokens(2).toBoolean;0;
+		case "StringList" => (string_lists(tokens(1)))(tokens(3).toInt) = tokens(2);0;
 		case _ => println("no match :(");-1;
 	}
 
 	def assign_var(tokens:Array[String]): Int = type_map(tokens(1)) match{
 
 		case "Int" => integer_vars(tokens(1)) = tokens(2).toInt;0;
-		case "Boolean" => boolean_vars(tokens(1)) tokens(2).toBoolean;0;
+		case "Boolean" => boolean_vars(tokens(1)) = tokens(2).toBoolean;0;
 		case "String" => string_vars(tokens(1)) = tokens(2);0;
 		case _ => println("no match :(");-1;
 	}
@@ -86,7 +87,8 @@ object evaluator extends App{
 	def add(tokens:Array[String]) : Int = {
 		
 		var var_name:String = tokens(3)
-		var sum:Int = (tokens(1).toInt + tokens(2).toInt);
+
+		var sum:Int = (getInt(tokens(1)) + getInt(tokens(2)));
 
 		if(!var_name.contains('['))
 			integer_vars(var_name) = sum;
@@ -101,7 +103,8 @@ object evaluator extends App{
 	def sub(tokens:Array[String]) : Int = {
 		
 		var var_name:String = tokens(3)
-		var diff:Int = (tokens(1).toInt - tokens(2).toInt);
+
+		var diff:Int = (getInt(tokens(1)) - getInt(tokens(2)));
 
 		if(!var_name.contains('['))
 			integer_vars(var_name) = diff;
@@ -116,7 +119,7 @@ object evaluator extends App{
 	def mult(tokens:Array[String]) : Int = {
 		
 		var var_name:String = tokens(3)
-		var product:Int = (tokens(1).toInt * tokens(2).toInt);
+		var product:Int = (getInt(tokens(1)) * getInt(tokens(2)));
 
 		if(!var_name.contains('['))
 			integer_vars(var_name) = product;
@@ -131,7 +134,7 @@ object evaluator extends App{
 	def div(tokens:Array[String]) : Int = {
 
 		var var_name:String = tokens(3)
-		var quotient:Int = (tokens(1).toInt / tokens(2).toInt);
+		var quotient:Int = (getInt(tokens(1)) / getInt(tokens(2)));
 
 		if(!var_name.contains('['))
 			integer_vars(var_name) = quotient;
@@ -141,6 +144,24 @@ object evaluator extends App{
 			(integer_lists(list_name))(index) = quotient;
 		}
 		quotient;
+	}
+
+	def isAllDigits(x: String) = x forall Character.isDigit
+
+	def getInt(x: String) : Int = {
+
+		var ret:Int = -1;
+
+		if(isAllDigits(x))
+			ret = x.toInt;
+		else if(x.contains('[')){
+			var list_name:String = x.split('[')(0)
+			var index:Int = (x.substring(x.indexOf("[") + 1, x.indexOf("]"))).toInt;
+			ret = (integer_lists(list_name))(index);
+		}
+		else
+			ret = integer_vars(x);
+		ret;
 	}
 
 }
