@@ -6,12 +6,16 @@ import scala.language.implicitConversions
 object evaluator extends App{
 
 	//State:
-	//var float_vars:Map[String,Float] = Map();
-	var boolean_vars = mutable.Map.empty[String, Boolean]
-	var string_vars = mutable.Map.empty[String, String]
-	var integer_vars = mutable.Map.empty[String, Int]
 
-	//var float_lists:Map[String,Array[Float]] = Map();
+	//maps var names to types
+	var type_map = mutable.Map.empty[String, String];
+
+	//variables
+	var boolean_vars = mutable.Map.empty[String, Boolean];
+	var string_vars = mutable.Map.empty[String, String];
+	var integer_vars = mutable.Map.empty[String, Int];
+
+	//lists
 	var boolean_lists = mutable.Map.empty[String, Array[Boolean]];
 	var string_lists = mutable.Map.empty[String, Array[String]];
 	var integer_lists = mutable.Map.empty[String, Array[Int]];
@@ -38,27 +42,47 @@ object evaluator extends App{
 		case "mult" => println(mult(tokens));0;
 		case "div" => println(div(tokens));0;
 		case "declare_list" => println(declare_list(tokens));0;
+		case "declare_var" => println(declare_var(tokens));0;
+		case "assign_list" => println(assign_list(tokens));0;
 		case _ => println("no match :(");-1;
 	}
 
-	//Declarations token(1)= list/var name, token(2) = type, (lists only) token(3) = size
+	//Declarations token(1): list/var name, token(2) = type, (lists only) token(3) = size
 	def declare_list(tokens:Array[String]): Int = tokens(2) match{
 		
-		case "Int" => integer_lists(tokens(1)) = new Array[Int](tokens(3).toInt);0;
-		case "Boolean" => boolean_lists(tokens(1)) = new Array[Boolean](tokens(3).toInt);0;
-		case "String" => string_lists(tokens(1)) = new Array[String](tokens(3).toInt);0;
+		case "Int" => type_map(tokens(1))= "Int"; integer_lists(tokens(1)) = new Array[Int](tokens(3).toInt);0;
+		case "Boolean" => type_map(tokens(1))= "Boolean"; boolean_lists(tokens(1)) = new Array[Boolean](tokens(3).toInt);0;
+		case "String" => type_map(tokens(1))= "String"; string_lists(tokens(1)) = new Array[String](tokens(3).toInt);0;
 		case _ => println("no match :(");-1;
 	}
 
 	def declare_var(tokens:Array[String]): Int = tokens(2) match{
 
-		case "Int" => integer_vars(tokens(1)) = 0;0;
-		case "Boolean" => boolean_vars(tokens(1)) = false;0;
-		case "String" => string_vars(tokens(1)) = "";0;
+		case "Int" => type_map(tokens(1))= "Int"; integer_vars(tokens(1)) = 0;0;
+		case "Boolean" => type_map(tokens(1))= "Boolean"; boolean_vars(tokens(1)) = false;0;
+		case "String" => type_map(tokens(1))= "String"; string_vars(tokens(1)) = "";0;
 		case _ => println("no match :(");-1;
 	}
 
-	//Arithmetic functions: token(0) = function, token(1),token(2) = 1 op 2, token(3)=storage variable
+	//Direct assignments: tokens(1) = listname, tokens(2) = value tokens(3) = index
+	def assign_list(tokens:Array[String]): Int = type_map(tokens(1)) match{
+
+		case "Int" => integer_lists(tokens(1))(tokens(3).toInt) = tokens(2).toInt;0;
+		case "Boolean" => (boolean_lists(tokens(1)))(tokens(3).toInt) = tokens(2).toBoolean;0;
+		case "String" => (string_lists(tokens(1)))(tokens(3).toInt) = tokens(2);0;
+		case _ => println("no match :(");-1;
+	}
+
+	def assign_var(tokens:Array[String]): Int = type_map(tokens(1)) match{
+
+		case "Int" => integer_vars(tokens(1)) = tokens(2).toInt;0;
+		case "Boolean" => boolean_vars(tokens(1)) tokens(2).toBoolean;0;
+		case "String" => string_vars(tokens(1)) = tokens(2);0;
+		case _ => println("no match :(");-1;
+	}
+
+
+	//Arithmetic functions assignments: token(0) = function, token(1),token(2) = 1 op 2, token(3)=storage variable
 	def add(tokens:Array[String]) : Int = {
 		
 		var var_name:String = tokens(3)
