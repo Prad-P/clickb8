@@ -1,3 +1,5 @@
-declare_var,Coke,Boolean
-assign_var,Coke,false
-write_line,Coke
+declare_var,Coke,String
+assign_var,Coke,hello
+declare_var,Pepsi,String
+assign_var,Pepsi,Coke
+write_line,Pepsi

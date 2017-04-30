@@ -98,17 +98,17 @@ object evaluator extends App{
 	//Direct assignments: tokens(1) = listname, tokens(2) = value tokens(3) = index
 	def assign_list(tokens:Array[String]): Int = type_map(tokens(1)) match{
 
-		case "IntList" => integer_lists(tokens(1))(tokens(3).toInt) = tokens(2).toInt;0;
-		case "BooleanList" => (boolean_lists(tokens(1)))(tokens(3).toInt) = tokens(2).toBoolean;0;
-		case "StringList" => (string_lists(tokens(1)))(tokens(3).toInt) = tokens(2);0;
+		case "IntList" => integer_lists(tokens(1))(tokens(3).toInt) = getInt(tokens(2));0;
+		case "BooleanList" => (boolean_lists(tokens(1)))(tokens(3).toInt) = getBool(tokens(2));0;
+		case "StringList" => (string_lists(tokens(1)))(tokens(3).toInt) = getStr(tokens(2));0;
 		case _ => println("no match :(");-1;
 	}
 
 	def assign_var(tokens:Array[String]): Int = type_map(tokens(1)) match{
 
-		case "Int" => integer_vars(tokens(1)) = tokens(2).toInt;0;
-		case "Boolean" => boolean_vars(tokens(1)) = tokens(2).toBoolean;0;
-		case "String" => string_vars(tokens(1)) = tokens(2);0;
+		case "Int" => integer_vars(tokens(1)) = getInt(tokens(2));0;
+		case "Boolean" => boolean_vars(tokens(1)) = getBool(tokens(2));0;
+		case "String" => string_vars(tokens(1)) = getStr(tokens(2));0;
 		case _ => println("no match :(");-1;
 	}
 
@@ -205,8 +205,10 @@ object evaluator extends App{
 			var index:Int = (x.substring(x.indexOf("[") + 1, x.indexOf("]"))).toInt;
 			ret = (string_lists(list_name))(index);
 		}
-		else
+		else if(string_vars.contains(x))
 			ret = string_vars(x);
+		else
+			ret = x;
 
 		ret;
 	}
@@ -220,8 +222,10 @@ object evaluator extends App{
 			var index:Int = (x.substring(x.indexOf("[") + 1, x.indexOf("]"))).toInt;
 			ret = (boolean_lists(list_name))(index);
 		}
-		else
+		else if(boolean_vars.contains(x))
 			ret = boolean_vars(x);
+		else
+			ret = x.toBoolean;
 
 		ret;
 	}
