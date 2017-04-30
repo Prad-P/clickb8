@@ -31,12 +31,16 @@ object parser extends App {
   	//Curent theory is that we will be able to use this regex match=>case to divide up the parsing into various methods that we can use
   	//to parse the individual vocab
 
-  	val LDPattern = "\\A[0-9].".r
-  	val APattern = ".[:].".r
-  	val EBPattern = "\\znext!".r
-  	val IFPattern = "\\z?".r
-  	val WPattern = ".while.".r
-  	val DPattern = ".*Why.*".r
+  	// val LDPattern = "\\A[0-9].".r
+  	// val APattern = ".[:].".r
+  	// val EBPattern = "\\znext!".r
+  	// val IFPattern = "\\z?".r
+  	// val WPattern = ".while.".r
+  	// val DPattern = ".*Why.*".r
+
+  	//Possible TODO::
+  	//Figure out how to use the match case in scala with regex so that this bit of code can look nicer
+  	//but it works for now
 
   	 if(line.matches("([0-9]).*"))
   	 	println(parseListDeclaration(line));
@@ -100,7 +104,7 @@ object parser extends App {
   	}
   	val varName = lineSplit(temp).substring(0,lineSplit(temp).length-1)
   	//will need a call to a parser to parse the expression
-  	varName
+  	("Value assigned to :: " + varName)
   }
 
   def parseEndblock(line:String) : String = {
@@ -112,7 +116,7 @@ object parser extends App {
   	val lineSplit = line.split(" ")
   	val varName = lineSplit(lineSplit.length-1).split("\\?")(0)
   	//will just have to pass the boolean variable name to the evaluator which will handle the rest
-  	varName
+  	("If statement bool :: " + varName)
   }
 
   def parseWhile(line:String) : String = {
@@ -123,7 +127,7 @@ object parser extends App {
   	}
   	val varName = lineSplit(temp+1)
   	//same as with If Statement
-  	varName
+  	("While statement bool :: " + varName)
   }
 
   def parseListDeclaration(line:String) : String = {
