@@ -32,20 +32,51 @@ object evaluator extends App{
 	}
 	
 	for (line <- Source.fromFile(input_file).getLines()){
-		var tokens:Array[String] = line.split(" ");
+		var tokens:Array[String] = line.split(",");
 		evaluate(tokens);
 	}
 
+	//tokens(0) is the function
 	def evaluate(tokens:Array[String]) : Int = tokens(0) match{
-		case "add" => println(add(tokens));0;
-		case "sub" => println(sub(tokens));0;
-		case "mult" => println(mult(tokens));0;
-		case "div" => println(div(tokens));0;
-		case "declare_list" => println(declare_list(tokens));0;
-		case "declare_var" => println(declare_var(tokens));0;
-		case "assign_list" => println(assign_list(tokens));0;
-		case "assign_var" => println(assign_var(tokens));0;
+		case "add" => add(tokens);0;
+		case "sub" => sub(tokens);0;
+		case "mult" => mult(tokens);0;
+		case "div" => div(tokens);0;
+		case "declare_list" => declare_list(tokens);0;
+		case "declare_var" => declare_var(tokens);0;
+		case "assign_list" => assign_list(tokens);0;
+		case "assign_var" => assign_var(tokens);0;
+		case "read_line" => read_line(tokens);0;
+		case "write_line" => write_line(tokens);0;
 		case _ => println("no match :(");-1;
+	}
+
+	//User IO functions token(1) : String var name
+	def read_line(tokens:Array[String]) : String = {
+
+		var var_name:String = tokens(1);
+		var input:String = scala.io.StdIn.readLine();
+
+
+		if(!var_name.contains('['))
+			assign_var(Array(" ",var_name,input));
+		else{
+			var list_name:String = var_name.split('[')(0)
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),input,index));
+		}
+
+		input
+	}
+
+	//Cannot write String literals directly! Must use a var)
+	def write_line(tokens:Array[String]) : String = {
+
+		var output:String = getStr(tokens(1)).toString;
+		println(output);
+
+		output
+
 	}
 
 	//Declarations token(1): list/var name, token(2) = type, (lists only) token(3) = size
@@ -88,62 +119,64 @@ object evaluator extends App{
 		
 		var var_name:String = tokens(3)
 
-		var sum:Int = (getInt(tokens(1)) + getInt(tokens(2)));
+		var sum:String = (getInt(tokens(1)) + getInt(tokens(2))).toString;
 
 		if(!var_name.contains('['))
-			integer_vars(var_name) = sum;
+			assign_var(Array(" ",var_name,sum));
 		else{
 			var list_name:String = var_name.split('[')(0)
-			var index:Int = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]"))).toInt;
-			(integer_lists(list_name))(index) = sum;
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),sum,index));
 		}
-		sum;
+		sum.toInt;
 	}
 
 	def sub(tokens:Array[String]) : Int = {
 		
 		var var_name:String = tokens(3)
 
-		var diff:Int = (getInt(tokens(1)) - getInt(tokens(2)));
+		var diff:String = (getInt(tokens(1)) - getInt(tokens(2))).toString;
 
 		if(!var_name.contains('['))
-			integer_vars(var_name) = diff;
+			assign_var(Array(" ",var_name,diff));
 		else{
 			var list_name:String = var_name.split('[')(0)
-			var index:Int = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]"))).toInt;
-			(integer_lists(list_name))(index) = diff;
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),diff,index));
 		}
-		diff;
+		diff.toInt;
 	}
 
 	def mult(tokens:Array[String]) : Int = {
 		
 		var var_name:String = tokens(3)
-		var product:Int = (getInt(tokens(1)) * getInt(tokens(2)));
+		
+		var product:String = (getInt(tokens(1)) * getInt(tokens(2))).toString;
 
 		if(!var_name.contains('['))
-			integer_vars(var_name) = product;
+			assign_var(Array(" ",var_name,product));
 		else{
 			var list_name:String = var_name.split('[')(0)
-			var index:Int = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]"))).toInt;
-			(integer_lists(list_name))(index) = product;
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),product,index));
 		}
-		product;
+		product.toInt;
 	}
 
 	def div(tokens:Array[String]) : Int = {
 
 		var var_name:String = tokens(3)
-		var quotient:Int = (getInt(tokens(1)) / getInt(tokens(2)));
+		
+		var quotient:String = (getInt(tokens(1)) / getInt(tokens(2))).toString;
 
 		if(!var_name.contains('['))
-			integer_vars(var_name) = quotient;
+			assign_var(Array(" ",var_name,quotient));
 		else{
 			var list_name:String = var_name.split('[')(0)
-			var index:Int = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]"))).toInt;
-			(integer_lists(list_name))(index) = quotient;
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),quotient,index));
 		}
-		quotient;
+		quotient.toInt;
 	}
 
 	def isAllDigits(x: String) = x forall Character.isDigit
@@ -161,6 +194,21 @@ object evaluator extends App{
 		}
 		else
 			ret = integer_vars(x);
+		ret;
+	}
+
+	def getStr(x: String) : String = {
+	
+		var ret:String = "";
+
+		if(x.contains('[')){
+			var list_name:String = x.split('[')(0)
+			var index:Int = (x.substring(x.indexOf("[") + 1, x.indexOf("]"))).toInt;
+			ret = (string_lists(list_name))(index);
+		}
+		else
+			ret = string_vars(x);
+
 		ret;
 	}
 
