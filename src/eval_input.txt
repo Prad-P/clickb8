@@ -1,6 +1,3 @@
-declare_list,green,Int,10
-mult,5,4,green[0]
-add,green[0],2,green[1]
-declare_var,hello,String
-assign_var,hello,Hello World!
-write_line,hello
+declare_var,Coke,Int
+assign_var,Coke,10
+write_line,Coke
