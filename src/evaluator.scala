@@ -52,30 +52,21 @@ object evaluator extends App{
 	}
 
 	//User IO functions token(1) : String var name
-	def read_line(tokens:Array[String]) : String = {
+	def read_line(tokens:Array[String]) : Int = type_map(tokens(1)) match{
 
-		var var_name:String = tokens(1);
-		var input:String = scala.io.StdIn.readLine();
-
-
-		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,input));
-		else{
-			var list_name:String = var_name.split('[')(0)
-			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),input,index));
-		}
-
-		input
+		case "Int" => integer_vars(tokens(1)) = scala.io.StdIn.readLine().toInt;0;
+		case "Boolean" => boolean_vars(tokens(1)) = scala.io.StdIn.readLine().toBoolean;0;
+		case "String" => string_vars(tokens(1)) = scala.io.StdIn.readLine();0;
+		case _ => println("no match :(");-1;
 	}
 
 	//Cannot write literals directly! Must use a var)
 	def write_line(tokens:Array[String]) : Int = type_map(tokens(1)) match{
 
 		case "Int" => println(getInt(tokens(1)).toString);0;
-		case "Boolean" => println(getBool(tokens(1)));0;
+		case "Boolean" => println(getBool(tokens(1)).toString);0;
 		case "String" => println(getStr(tokens(1)));0;
-		case _ => println(type_map(tokens(1)));-1;
+		case _ => println("no match :(");-1;
 	}
 
 	//Declarations token(1): list/var name, token(2) = type, (lists only) token(3) = size

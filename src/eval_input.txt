@@ -1,5 +1,7 @@
-declare_var,Coke,String
-assign_var,Coke,hello
-declare_var,Pepsi,String
-assign_var,Pepsi,Coke
+declare_list,Coke,Int,10
+assign_list,Coke,22,0
+declare_var,Pepsi,Int
+assign_var,Pepsi,Coke[0]
+write_line,Pepsi
+read_line,Pepsi
 write_line,Pepsi
