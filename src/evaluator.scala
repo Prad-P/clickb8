@@ -69,14 +69,13 @@ object evaluator extends App{
 		input
 	}
 
-	//Cannot write String literals directly! Must use a var)
-	def write_line(tokens:Array[String]) : String = {
+	//Cannot write literals directly! Must use a var)
+	def write_line(tokens:Array[String]) : Int = type_map(tokens(1)) match{
 
-		var output:String = getStr(tokens(1)).toString;
-		println(output);
-
-		output
-
+		case "Int" => println(integer_vars(tokens(1)).toString);0;
+		case "Boolean" => println(boolean_vars(tokens(1)).toString);0;
+		case "String" => println(string_vars(tokens(1)).toString);0;
+		case _ => println(type_map(tokens(1)));-1;
 	}
 
 	//Declarations token(1): list/var name, token(2) = type, (lists only) token(3) = size
