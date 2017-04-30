@@ -1,3 +1,3 @@
-declare_var,Coke,Int
-assign_var,Coke,10
+declare_var,Coke,Boolean
+assign_var,Coke,false
 write_line,Coke

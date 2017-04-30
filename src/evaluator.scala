@@ -72,9 +72,9 @@ object evaluator extends App{
 	//Cannot write literals directly! Must use a var)
 	def write_line(tokens:Array[String]) : Int = type_map(tokens(1)) match{
 
-		case "Int" => println(integer_vars(tokens(1)).toString);0;
-		case "Boolean" => println(boolean_vars(tokens(1)).toString);0;
-		case "String" => println(string_vars(tokens(1)).toString);0;
+		case "Int" => println(getInt(tokens(1)).toString);0;
+		case "Boolean" => println(getBool(tokens(1)));0;
+		case "String" => println(getStr(tokens(1)));0;
 		case _ => println(type_map(tokens(1)));-1;
 	}
 
@@ -207,6 +207,21 @@ object evaluator extends App{
 		}
 		else
 			ret = string_vars(x);
+
+		ret;
+	}
+
+	def getBool(x: String) : Boolean = {
+	
+		var ret:Boolean = false;
+
+		if(x.contains('[')){
+			var list_name:String = x.split('[')(0)
+			var index:Int = (x.substring(x.indexOf("[") + 1, x.indexOf("]"))).toInt;
+			ret = (boolean_lists(list_name))(index);
+		}
+		else
+			ret = boolean_vars(x);
 
 		ret;
 	}
