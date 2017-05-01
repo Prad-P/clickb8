@@ -52,30 +52,21 @@ object evaluator extends App{
 	}
 
 	//User IO functions token(1) : String var name
-	def read_line(tokens:Array[String]) : String = {
+	def read_line(tokens:Array[String]) : Int = type_map(tokens(1)) match{
 
-		var var_name:String = tokens(1);
-		var input:String = scala.io.StdIn.readLine();
-
-
-		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,input));
-		else{
-			var list_name:String = var_name.split('[')(0)
-			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),input,index));
-		}
-
-		input
+		case "Int" => integer_vars(tokens(1)) = scala.io.StdIn.readLine().toInt;0;
+		case "Boolean" => boolean_vars(tokens(1)) = scala.io.StdIn.readLine().toBoolean;0;
+		case "String" => string_vars(tokens(1)) = scala.io.StdIn.readLine();0;
+		case _ => println("no match :(");-1;
 	}
 
 	//Cannot write literals directly! Must use a var)
 	def write_line(tokens:Array[String]) : Int = type_map(tokens(1)) match{
 
-		case "Int" => println(integer_vars(tokens(1)).toString);0;
-		case "Boolean" => println(boolean_vars(tokens(1)).toString);0;
-		case "String" => println(string_vars(tokens(1)).toString);0;
-		case _ => println(type_map(tokens(1)));-1;
+		case "Int" => println(getInt(tokens(1)).toString);0;
+		case "Boolean" => println(getBool(tokens(1)).toString);0;
+		case "String" => println(getStr(tokens(1)));0;
+		case _ => println("no match :(");-1;
 	}
 
 	//Declarations token(1): list/var name, token(2) = type, (lists only) token(3) = size
@@ -98,17 +89,17 @@ object evaluator extends App{
 	//Direct assignments: tokens(1) = listname, tokens(2) = value tokens(3) = index
 	def assign_list(tokens:Array[String]): Int = type_map(tokens(1)) match{
 
-		case "IntList" => integer_lists(tokens(1))(tokens(3).toInt) = tokens(2).toInt;0;
-		case "BooleanList" => (boolean_lists(tokens(1)))(tokens(3).toInt) = tokens(2).toBoolean;0;
-		case "StringList" => (string_lists(tokens(1)))(tokens(3).toInt) = tokens(2);0;
+		case "IntList" => integer_lists(tokens(1))(tokens(3).toInt) = getInt(tokens(2));0;
+		case "BooleanList" => (boolean_lists(tokens(1)))(tokens(3).toInt) = getBool(tokens(2));0;
+		case "StringList" => (string_lists(tokens(1)))(tokens(3).toInt) = getStr(tokens(2));0;
 		case _ => println("no match :(");-1;
 	}
 
 	def assign_var(tokens:Array[String]): Int = type_map(tokens(1)) match{
 
-		case "Int" => integer_vars(tokens(1)) = tokens(2).toInt;0;
-		case "Boolean" => boolean_vars(tokens(1)) = tokens(2).toBoolean;0;
-		case "String" => string_vars(tokens(1)) = tokens(2);0;
+		case "Int" => integer_vars(tokens(1)) = getInt(tokens(2));0;
+		case "Boolean" => boolean_vars(tokens(1)) = getBool(tokens(2));0;
+		case "String" => string_vars(tokens(1)) = getStr(tokens(2));0;
 		case _ => println("no match :(");-1;
 	}
 
@@ -205,8 +196,27 @@ object evaluator extends App{
 			var index:Int = (x.substring(x.indexOf("[") + 1, x.indexOf("]"))).toInt;
 			ret = (string_lists(list_name))(index);
 		}
-		else
+		else if(string_vars.contains(x))
 			ret = string_vars(x);
+		else
+			ret = x;
+
+		ret;
+	}
+
+	def getBool(x: String) : Boolean = {
+	
+		var ret:Boolean = false;
+
+		if(x.contains('[')){
+			var list_name:String = x.split('[')(0)
+			var index:Int = (x.substring(x.indexOf("[") + 1, x.indexOf("]"))).toInt;
+			ret = (boolean_lists(list_name))(index);
+		}
+		else if(boolean_vars.contains(x))
+			ret = boolean_vars(x);
+		else
+			ret = x.toBoolean;
 
 		ret;
 	}
