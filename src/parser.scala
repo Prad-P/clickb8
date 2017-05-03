@@ -1,3 +1,4 @@
+//package src;
 import scala.io.Source
 import scala.util.matching.Regex
 
@@ -20,6 +21,14 @@ object parser extends App {
     	parse(line);
     }
 
+    /*def startParse() {
+    	for (line <- Source.fromFile(filename).getLines()) {
+    		//ignore comments
+    		if(!line.startsWith("//"))
+    			parse(line);
+    	}
+    }*/
+
     def parse(line:String) : Int = {
     	//Possible TODO::
     	//Figure out how to use the match case in scala with regex so that this bit of code can look nicer
@@ -31,10 +40,16 @@ object parser extends App {
     		println(parseAssignment(line));
 
     	if(line.matches(".*next!"))
+    		println(parseWEndblock(line));
+
+    	if(line.matches(".*out!"))
     		println(parseEndblock(line));
 
     	if(line.matches(".*(\\?)"))
     		println(parseIfStatement(line));
+
+    	if(line.matches(".*(\\.)"))
+    		println(parseElseStatement(line));
 
     	if(line.matches(".*(W|w)hile.*"))
   			println(parseWhile(line));
@@ -87,10 +102,11 @@ object parser extends App {
 	  	//will need a call to a parser to parse the expression
 	  	val pExpr = parseExpression(postColon(1))
 	  	if(ind >= 0) {
-	  		("assign_list," + varName + "," + pExpr + "," + ind);
+	  		//("assign_list," + varName + "," + pExpr + "," + ind);
+	  		(pExpr + "," + varName + "," + ind)
 	  	}
 	  	else {
-	  		("assign_var," + varName + "," + pExpr)
+	  		(pExpr + "," + varName)
 	  	}
 	}
 
@@ -100,65 +116,100 @@ object parser extends App {
 	  	var factorLen = 0
 	  	var operator:String = null
 	  	var n = 0
-	  	//exprSplit.foreach { i:String =>
-  		while (n < exprSplit.length) {
-  			val i:String = exprSplit(n)
-	  		if((factorLen < 2) && varNameList.contains(i)) {
-	  			factorList(factorLen) = i
-	  			factorLen += 1
-	  		}
-	  		if((factorLen < 2) && i.matches("\\d+")) {
-	  			if(exprSplit(n+1).matches("(T|t)imes")) {
-	  				factorList(factorLen) = exprSplit(n+2) + ":" + exprSplit(n)
-	  				factorLen += 1
-	  			}
-	  			else {
-	  				factorList(factorLen) = i
-	  				factorLen += 1
-	  			}
-	  		}
-	  		if((factorLen < 2) && i.matches("LOVE(S)*")) {
-	  			factorList(factorLen) = "true"
-	  			factorLen += 1
-	  		}
-	  		if((factorLen < 2) && i.matches("HATE(S)*")) {
-	  			factorList(factorLen) = "false"
-	  			factorLen += 1
-	  		}
-	  		if(i.matches("Add")) {
-	  			operator = "add"
-	  		}
-	  		if(i.matches("Stop")) {
-	  			operator = "sub"
-	  		}
-	  		if(i.matches("Common")) {
-	  			operator = "mult"
-	  		}
-	  		if(i.matches("Seperates")) {
-	  			operator = "div"
-	  		}
-	  		n+=1
-	  	}
 	  	var token = ""
-	  	if(factorLen == 2) {
-	  		token = factorList(0) + "," + operator + "," + factorList(1)
+	  	//exprSplit.foreach { i:String =>
+	  	if(!expr.matches(" .*\".*\".*")) {
+	  		while (n < exprSplit.length) {
+	  			val i:String = exprSplit(n)
+		  		if((factorLen < 2) && varNameList.contains(i)) {
+		  			factorList(factorLen) = i
+		  			factorLen += 1
+		  		}
+		  		if((factorLen < 2) && i.matches("\\d+")) {
+		  			if(exprSplit(n+1).matches("(T|t)imes")) {
+		  				factorList(factorLen) = exprSplit(n+2) + ":" + exprSplit(n)
+		  				factorLen += 1
+		  			}
+		  			else {
+		  				factorList(factorLen) = i
+		  				factorLen += 1
+		  			}
+		  		}
+		  		if((factorLen < 2) && i.matches("LOVE(S)*")) {
+		  			factorList(factorLen) = "true"
+		  			factorLen += 1
+		  		}
+		  		if((factorLen < 2) && i.matches("HATE(S)*")) {
+		  			factorList(factorLen) = "false"
+		  			factorLen += 1
+		  		}
+		  		if(i.matches("Add")) {
+		  			operator = "add"
+		  		}
+		  		if(i.matches("Stop")) {
+		  			operator = "sub"
+		  		}
+		  		if(i.matches("Common")) {
+		  			operator = "mult"
+		  		}
+		  		if(i.matches("Seperates")) {
+		  			operator = "div"
+		  		}
+		  		if(i.matches("And")) {
+		  			operator = "and"
+		  		}
+		  		if(i.matches("Or")) {
+		  			operator = "or"
+		  		}
+		  		if(i.matches("Not")) {
+		  			operator = "not"
+		  		}
+		  		if(i.matches("Greatest")) {
+		  			operator = "greater_than"
+		  		}
+		  		if(i.matches("Worst")) {
+		  			operator = "lesser_than"
+		  		}
+		  		if(i.matches("As")) {
+		  			operator = "equal_to"
+		  		}
+		  		n+=1
+		  	}
 	  	}
 	  	else {
-	  		token = factorList(0)
+	  		val stringExtract = expr.split("\"")
+	  		token = "assign_var," + stringExtract(1)
+	  	}
+	  	if(operator != null && operator.matches("not")) {
+	  		token = operator + "," + factorList(0)
+	  	}
+	  	else if(factorLen == 2) {
+	  		token = operator + "," + factorList(0) + "," + factorList(1)
+	  	}
+	  	else if(factorList(0) != null) {
+	  		token = "assign_var," + factorList(0)
 	  	}
 	  	token
 	}
 
 	def parseEndblock(line:String) : String = {
 	  	//this doesn't really do anything yet because it's just an endblock
-	  	"endblock"
+	  	"endif"
+	}
+
+	def parseWEndblock(line:String) : String = {
+		"endwhile"
 	}
 
 	def parseIfStatement(line:String) : String = {
 	  	val lineSplit = line.split(" ")
 	  	val varName = lineSplit(lineSplit.length-1).split("\\?")(0)
 	  	//will just have to pass the boolean variable name to the evaluator which will handle the rest
-	  	("If statement bool :: " + varName)
+	  	("if," + varName)
+	}
+
+	def parseElseStatement(line:String) : String = {
+		"else"
 	}
 
 	def parseWhile(line:String) : String = {
@@ -169,9 +220,8 @@ object parser extends App {
 	  	}
 	  	val varName = lineSplit(temp+1)
 	  	//same as with If Statement
-	  	("While statement bool :: " + varName)
+	  	("while," + varName)
 	}
-
 	def parseListDeclaration(line:String) : String = {
 	  	val lineSplit = line.split(" ")
 	  	val listLength = lineSplit(0)
