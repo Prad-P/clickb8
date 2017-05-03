@@ -1,0 +1,15 @@
+declare_var,Beef,Int
+assign_var,Beef,10
+assign_var,Beef,1,add,Beef
+declare_var,Seinfeld,Boolean
+assign_var,Seinfeld,true
+declare_var,Fogle,Int
+assign_var,Fogle,1
+declare_var,Troops,Int
+assign_var,Troops,1
+while,Seinfeld
+assign_var,Fogle,Fogle,mult,Troops
+assign_var,Troops,Troops,add,1
+assign_var,Seinfeld,Troops,lessThan,Beef
+endwhile
+write_line,Fogle

@@ -102,10 +102,11 @@ object parser extends App {
 	  	//will need a call to a parser to parse the expression
 	  	val pExpr = parseExpression(postColon(1))
 	  	if(ind >= 0) {
-	  		("assign_list," + varName + "," + pExpr + "," + ind);
+	  		//("assign_list," + varName + "," + pExpr + "," + ind);
+	  		(pExpr + "," + varName + "," + ind)
 	  	}
 	  	else {
-	  		("assign_var," + varName + "," + pExpr)
+	  		(pExpr + "," + varName)
 	  	}
 	}
 
@@ -164,29 +165,29 @@ object parser extends App {
 		  			operator = "not"
 		  		}
 		  		if(i.matches("Greatest")) {
-		  			operator = "greaterThan"
+		  			operator = "greater_than"
 		  		}
 		  		if(i.matches("Worst")) {
-		  			operator = "lessThan"
+		  			operator = "lesser_than"
 		  		}
 		  		if(i.matches("As")) {
-		  			operator = "="
+		  			operator = "equal_to"
 		  		}
 		  		n+=1
 		  	}
 	  	}
 	  	else {
 	  		val stringExtract = expr.split("\"")
-	  		token = stringExtract(1)
+	  		token = "assign_var," + stringExtract(1)
 	  	}
 	  	if(operator != null && operator.matches("not")) {
 	  		token = operator + "," + factorList(0)
 	  	}
 	  	else if(factorLen == 2) {
-	  		token = factorList(0) + "," + operator + "," + factorList(1)
+	  		token = operator + "," + factorList(0) + "," + factorList(1)
 	  	}
 	  	else if(factorList(0) != null) {
-	  		token = factorList(0)
+	  		token = "assign_var," + factorList(0)
 	  	}
 	  	token
 	}

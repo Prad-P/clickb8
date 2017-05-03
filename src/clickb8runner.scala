@@ -24,6 +24,7 @@ object clickb8runner extends App {
 
     val parserc = new parser(input_file)
     val parsedcalls = parserc.startParse()
+    println(parsedcalls)
     val evalc = new evaluator()
     evalc.startEval(parsedcalls)
 
@@ -142,10 +143,11 @@ class parser(filename:String) {
 	  	//will need a call to a parser to parse the expression
 	  	val pExpr = parseExpression(postColon(1))
 	  	if(ind >= 0) {
-	  		("assign_list," + varName + "," + pExpr + "," + ind);
+	  		//("assign_list," + varName + "," + pExpr + "," + ind);
+	  		(pExpr + "," + varName + "," + ind)
 	  	}
 	  	else {
-	  		("assign_var," + varName + "," + pExpr)
+	  		(pExpr + "," + varName)
 	  	}
 	}
 
@@ -204,29 +206,29 @@ class parser(filename:String) {
 		  			operator = "not"
 		  		}
 		  		if(i.matches("Greatest")) {
-		  			operator = "greaterThan"
+		  			operator = "greater_than"
 		  		}
 		  		if(i.matches("Worst")) {
-		  			operator = "lessThan"
+		  			operator = "lesser_than"
 		  		}
 		  		if(i.matches("As")) {
-		  			operator = "="
+		  			operator = "equal_to"
 		  		}
 		  		n+=1
 		  	}
 	  	}
 	  	else {
 	  		val stringExtract = expr.split("\"")
-	  		token = stringExtract(1)
+	  		token = "assign_var," + stringExtract(1)
 	  	}
 	  	if(operator != null && operator.matches("not")) {
 	  		token = operator + "," + factorList(0)
 	  	}
 	  	else if(factorLen == 2) {
-	  		token = factorList(0) + "," + operator + "," + factorList(1)
+	  		token = operator + "," + factorList(0) + "," + factorList(1)
 	  	}
 	  	else if(factorList(0) != null) {
-	  		token = factorList(0)
+	  		token = "assign_var," + factorList(0)
 	  	}
 	  	token
 	}
@@ -594,9 +596,9 @@ class evaluator{
 
 	def assign_var(tokens:Array[String]): Int = type_map(tokens(1)) match{
 
-		case "Int" => integer_vars(tokens(1)) = getInt(tokens(2));0;
-		case "Boolean" => boolean_vars(tokens(1)) = getBool(tokens(2));0;
-		case "String" => string_vars(tokens(1)) = getStr(tokens(2));0;
+		case "Int" => integer_vars(tokens(2)) = getInt(tokens(1));0;
+		case "Boolean" => boolean_vars(tokens(2)) = getBool(tokens(1));0;
+		case "String" => string_vars(tokens(2)) = getStr(tokens(1));0;
 		case _ => println("no match :(");-1;
 	}
 
