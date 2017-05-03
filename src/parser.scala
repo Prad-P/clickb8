@@ -1,3 +1,4 @@
+//package src;
 import scala.io.Source
 import scala.util.matching.Regex
 
@@ -20,6 +21,14 @@ object parser extends App {
     	parse(line);
     }
 
+    /*def startParse() {
+    	for (line <- Source.fromFile(filename).getLines()) {
+    		//ignore comments
+    		if(!line.startsWith("//"))
+    			parse(line);
+    	}
+    }*/
+
     def parse(line:String) : Int = {
     	//Possible TODO::
     	//Figure out how to use the match case in scala with regex so that this bit of code can look nicer
@@ -31,6 +40,9 @@ object parser extends App {
     		println(parseAssignment(line));
 
     	if(line.matches(".*next!"))
+    		println(parseWEndblock(line));
+
+    	if(line.matches(".*out!"))
     		println(parseEndblock(line));
 
     	if(line.matches(".*(\\?)"))
@@ -137,10 +149,31 @@ object parser extends App {
 	  		if(i.matches("Seperates")) {
 	  			operator = "div"
 	  		}
+	  		if(i.matches("And")) {
+	  			operator = "and"
+	  		}
+	  		if(i.matches("Or")) {
+	  			operator = "or"
+	  		}
+	  		if(i.matches("Not")) {
+	  			operator = "not"
+	  		}
+	  		if(i.matches("Greatest")) {
+	  			operator = "greaterThan"
+	  		}
+	  		if(i.matches("Worst")) {
+	  			operator = "lessThan"
+	  		}
+	  		if(i.matches("As")) {
+	  			operator = "="
+	  		}
 	  		n+=1
 	  	}
 	  	var token = ""
-	  	if(factorLen == 2) {
+	  	if(operator != null && operator.matches("not")) {
+	  		token = operator + "," + factorList(0)
+	  	}
+	  	else if(factorLen == 2) {
 	  		token = factorList(0) + "," + operator + "," + factorList(1)
 	  	}
 	  	else {
@@ -151,7 +184,11 @@ object parser extends App {
 
 	def parseEndblock(line:String) : String = {
 	  	//this doesn't really do anything yet because it's just an endblock
-	  	"endblock"
+	  	"ifendblock"
+	}
+
+	def parseWEndblock(line:String) : String = {
+		"whileendlbock"
 	}
 
 	def parseIfStatement(line:String) : String = {
@@ -171,7 +208,6 @@ object parser extends App {
 	  	//same as with If Statement
 	  	("While statement bool :: " + varName)
 	}
-
 	def parseListDeclaration(line:String) : String = {
 	  	val lineSplit = line.split(" ")
 	  	val listLength = lineSplit(0)
