@@ -134,7 +134,18 @@ object evaluator extends App{
 	//comparators tokens(1),tokens(2) = 1 compare 2, tokens(3) storage boolean
 	def equal_to(tokens:Array[String]) : Int ={
 
-		var boolean_str:String = (getInt(tokens(1)) == getInt(tokens(2))).toString;
+		var boolean_str:String = "false";
+
+		if(type_map(tokens(1))=="Int" && type_map(tokens(2))=="Int"){
+			boolean_str = (getInt(tokens(1)) == getInt(tokens(2))).toString;
+		}
+		else if(type_map(tokens(1))=="Boolean" && type_map(tokens(2))=="Boolean"){
+			boolean_str = (getBool(tokens(1)) == getBool(tokens(2))).toString;
+		}
+		else{
+			boolean_str = (getStr(tokens(1)) == getStr(tokens(2))).toString;
+		}
+
 		var var_name:String = tokens(3);
 
 		if(!var_name.contains('['))

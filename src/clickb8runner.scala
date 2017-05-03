@@ -416,9 +416,21 @@ class evaluator{
 		case "if" => eval_if(tokens);3;
 		case "else" => 0;
 		case "endif" => eval_endif(tokens);0;
+		case "tokenize" =>eval_tokenize(tokens);0;
 
 		case _ => println("no match :(");-1;
 	}
+
+	//tokenizer tokens(1)=string var or literals tokens(2)=list of strings that will store our chars
+	def eval_tokenize(tokens:Array[String]) : Int ={
+
+		var char_array:Array[String] = getStr(tokens(1)).sliding(1).toArray;
+
+		string_lists(tokens(2)) = char_array;
+
+		0;
+	}
+
 	//conditionals tokens(1) = bolean var, else,endif have no args
 
 	def eval_endif(tokens:Array[String]) : Int ={
