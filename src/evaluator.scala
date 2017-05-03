@@ -78,7 +78,60 @@ object evaluator extends App{
 		case "not" => eval_not(tokens);0;
 		case "or" => eval_or(tokens);0;
 		case "and" => eval_and(tokens);0;
+		case "greater_than" => greater_than(tokens);0;
+		case "lesser_than" => lesser_than(tokens);0;
+		case "equal_to" => equal_to(tokens);0;
+
 		case _ => println("no match :(");-1;
+	}
+	
+	//comparators tokens(1),tokens(2) = 1 compare 2, tokens(3) storage boolean
+	def equal_to(tokens:Array[String]) : Int ={
+
+		var boolean_str:String = (getInt(tokens(1)) == getInt(tokens(2))).toString;
+		var var_name:String = tokens(3);
+
+		if(!var_name.contains('['))
+			assign_var(Array(" ",var_name,boolean_str));
+		else{
+			var list_name:String = var_name.split('[')(0)
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+		}
+		0;
+		
+	}
+
+	def lesser_than(tokens:Array[String]) : Int ={
+
+		var boolean_str:String = (getInt(tokens(1)) < getInt(tokens(2))).toString;
+		var var_name:String = tokens(3);
+
+		if(!var_name.contains('['))
+			assign_var(Array(" ",var_name,boolean_str));
+		else{
+			var list_name:String = var_name.split('[')(0)
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+		}
+		0;
+		
+	}
+
+	def greater_than(tokens:Array[String]) : Int ={
+
+		var boolean_str:String = (getInt(tokens(1)) > getInt(tokens(2))).toString;
+		var var_name:String = tokens(3);
+
+		if(!var_name.contains('['))
+			assign_var(Array(" ",var_name,boolean_str));
+		else{
+			var list_name:String = var_name.split('[')(0)
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+		}
+		0;
+		
 	}
 
 	//conditionals tokens(1),tokens(2) bool vals, tokens(3) = storage / for not tokens(2) = storage
