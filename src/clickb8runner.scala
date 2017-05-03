@@ -54,7 +54,7 @@ class parser(filename:String) {
     	for (line <- Source.fromFile(filename).getLines()) {
     		//ignore comments
     		if(!line.startsWith("//"))
-    			returnStr = returnStr + parse(line) + "!";
+    			returnStr = returnStr + parse(line) + "\t";
     	}
     	returnStr
     }
@@ -125,7 +125,7 @@ class parser(filename:String) {
 	  		case "Still" => vtype = "String"
 	  		case _ => vtype = "null"
 	  	}
-	  	("declare_var," + varName + "," + vtype)
+	  	("declare_var|" + varName + "|" + vtype)
 	}
 
 	def parseAssignment(line:String) : String = {
@@ -144,10 +144,10 @@ class parser(filename:String) {
 	  	val pExpr = parseExpression(postColon(1))
 	  	if(ind >= 0) {
 	  		//("assign_list," + varName + "," + pExpr + "," + ind);
-	  		(pExpr + "," + varName + "," + ind)
+	  		(pExpr + "|" + varName + "|" + ind)
 	  	}
 	  	else {
-	  		(pExpr + "," + varName)
+	  		(pExpr + "|" + varName)
 	  	}
 	}
 
@@ -219,16 +219,16 @@ class parser(filename:String) {
 	  	}
 	  	else {
 	  		val stringExtract = expr.split("\"")
-	  		token = "assign_var," + stringExtract(1)
+	  		token = "assign_var|" + stringExtract(1)
 	  	}
 	  	if(operator != null && operator.matches("not")) {
-	  		token = operator + "," + factorList(0)
+	  		token = operator + "|" + factorList(0)
 	  	}
 	  	else if(factorLen == 2) {
-	  		token = operator + "," + factorList(0) + "," + factorList(1)
+	  		token = operator + "|" + factorList(0) + "|" + factorList(1)
 	  	}
 	  	else if(factorList(0) != null) {
-	  		token = "assign_var," + factorList(0)
+	  		token = "assign_var|" + factorList(0)
 	  	}
 	  	token
 	}
@@ -246,7 +246,7 @@ class parser(filename:String) {
 	  	val lineSplit = line.split(" ")
 	  	val varName = lineSplit(lineSplit.length-1).split("\\?")(0)
 	  	//will just have to pass the boolean variable name to the evaluator which will handle the rest
-	  	("if," + varName)
+	  	("if|" + varName)
 	}
 
 	def parseElseStatement(line:String) : String = {
@@ -261,7 +261,7 @@ class parser(filename:String) {
 	  	}
 	  	val varName = lineSplit(temp+1)
 	  	//same as with If Statement
-	  	("while," + varName)
+	  	("while|" + varName)
 	}
 	def parseListDeclaration(line:String) : String = {
 	  	val lineSplit = line.split(" ")
@@ -274,7 +274,7 @@ class parser(filename:String) {
 	  		case "Brings" => listType = "Boolean"
 	  		case "Still" => listType = "String"
 	  	}
-	  	("declare_list," + listName + "," + listType + "," + listLength)
+	  	("declare_list|" + listName + "|" + listType + "|" + listLength)
 	}
 
 	def parseWriteVar(line:String) : String = {
@@ -285,7 +285,7 @@ class parser(filename:String) {
 	  	}
 	  	val varName = lineSplit(temp-1)
 	  	//gotta do something with the variable name but for now I'm just gonna return it as a string
-	  	("write_line," + varName)
+	  	("write_line|" + varName)
 
 	}
 
@@ -297,7 +297,7 @@ class parser(filename:String) {
 	  	}
 	  	val varName = lineSplit(temp-1)
 	  	//gotta do something with the variable name but for now I'm just gonna return it as a string
-	  	("read_line," + varName)
+	  	("read_line|" + varName)
 	}
 }
 
@@ -345,12 +345,12 @@ class evaluator{
 	def startEval(commands:String) {
 
 
-		val instructions = commands.split("!")
+		val instructions = commands.split("\t")
 
 		while(control < instructions.length && instructions(control)!=null){
 			
 			//println(instructions(control));
-			var state_var = evaluate(instructions(control).split(","));
+			var state_var = evaluate(instructions(control).split("|"));
 
 			//1=loop,2=endloop
 			if(state_var == 1)
@@ -366,21 +366,21 @@ class evaluator{
 
 				if(boolean_vars(if_condition) == true){
 
-					while(instructions(control).split(",")(0) != "endif" && instructions(control).split(",")(0) != "else"){
+					while(instructions(control).split("|")(0) != "endif" && instructions(control).split("|")(0) != "else"){
 						
-						println(instructions(control).split(",")(0));
+						println(instructions(control).split("|")(0));
 
-						state_var = evaluate(instructions(control).split(","));
+						state_var = evaluate(instructions(control).split("|"));
 						control+=1;
 					}
 				
-					while(instructions(control).split(",")(0) != "endif"){
+					while(instructions(control).split("|")(0) != "endif"){
 
 						control+=1;
 					}
 				}
 				else{
-					while(instructions(control).split(",")(0) != "endif" && instructions(control).split(",")(0) != "else"){
+					while(instructions(control).split("|")(0) != "endif" && instructions(control).split("|")(0) != "else"){
 
 						control+=1;
 					}
