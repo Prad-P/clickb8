@@ -28,8 +28,9 @@ object evaluator extends App{
 
 	//control variable detects changes in control flow (loops,conditionals)
 	var control:Int = 0;
-	var loop_start:Int = 0; 
-	var condition:String = "";
+	var loop_start:Int = 0;
+	var while_condition:String = "";
+	var if_condition:String = "";
 
 	try{
     	input_file = args(0);
@@ -41,7 +42,6 @@ object evaluator extends App{
 	for (line <- Source.fromFile(input_file).getLines()){
  		instructions(control) = (line);
  		control+=1;
- 		println(line);
 
 	}
 
@@ -51,11 +51,41 @@ object evaluator extends App{
 		
 		var state_var = evaluate(instructions(control).split(","));
 
+		//1=loop,2=endloop
 		if(state_var == 1)
 			loop_start=control;
 		else if(state_var == 2){
-			if(boolean_vars(condition) == true)
+			if(boolean_vars(while_condition) == true)
 				control = loop_start;
+		}
+
+		//3=if
+
+		if(state_var == 3){
+
+			if(boolean_vars(if_condition) == true){
+
+				while(instructions(control).split(",")(0) != "endif" && instructions(control).split(",")(0) != "else"){
+					
+					println(instructions(control).split(",")(0));
+
+					state_var = evaluate(instructions(control).split(","));
+					control+=1;
+				}
+			
+				while(instructions(control).split(",")(0) != "endif"){
+
+					control+=1;
+				}
+			}
+			else{
+				while(instructions(control).split(",")(0) != "endif" && instructions(control).split(",")(0) != "else"){
+
+					control+=1;
+				}
+			}
+			state_var = 0;
+
 		}
 
 		control+=1;
@@ -78,7 +108,76 @@ object evaluator extends App{
 		case "not" => eval_not(tokens);0;
 		case "or" => eval_or(tokens);0;
 		case "and" => eval_and(tokens);0;
+		case "greater_than" => greater_than(tokens);0;
+		case "lesser_than" => lesser_than(tokens);0;
+		case "equal_to" => equal_to(tokens);0;
+		case "if" => eval_if(tokens);3;
+		case "else" => 0;
+		case "endif" => eval_endif(tokens);0;
+
 		case _ => println("no match :(");-1;
+	}
+	//conditionals tokens(1) = bolean var, else,endif have no args
+
+	def eval_endif(tokens:Array[String]) : Int ={
+		if_condition = "";
+		0;
+	}
+
+	def eval_if(tokens:Array[String]) : Int ={
+
+		if_condition = tokens(1);
+		0;
+	}
+
+	
+	//comparators tokens(1),tokens(2) = 1 compare 2, tokens(3) storage boolean
+	def equal_to(tokens:Array[String]) : Int ={
+
+		var boolean_str:String = (getInt(tokens(1)) == getInt(tokens(2))).toString;
+		var var_name:String = tokens(3);
+
+		if(!var_name.contains('['))
+			assign_var(Array(" ",var_name,boolean_str));
+		else{
+			var list_name:String = var_name.split('[')(0)
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+		}
+		0;
+		
+	}
+
+	def lesser_than(tokens:Array[String]) : Int ={
+
+		var boolean_str:String = (getInt(tokens(1)) < getInt(tokens(2))).toString;
+		var var_name:String = tokens(3);
+
+		if(!var_name.contains('['))
+			assign_var(Array(" ",var_name,boolean_str));
+		else{
+			var list_name:String = var_name.split('[')(0)
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+		}
+		0;
+		
+	}
+
+	def greater_than(tokens:Array[String]) : Int ={
+
+		var boolean_str:String = (getInt(tokens(1)) > getInt(tokens(2))).toString;
+		var var_name:String = tokens(3);
+
+		if(!var_name.contains('['))
+			assign_var(Array(" ",var_name,boolean_str));
+		else{
+			var list_name:String = var_name.split('[')(0)
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+		}
+		0;
+		
 	}
 
 	//conditionals tokens(1),tokens(2) bool vals, tokens(3) = storage / for not tokens(2) = storage
@@ -139,7 +238,7 @@ object evaluator extends App{
 	//tokens(1) == boolean var, if true loop
 	def eval_while(tokens:Array[String]) : Int ={
 
-		condition = tokens(1);
+		while_condition = tokens(1);
 
 
 		0;
