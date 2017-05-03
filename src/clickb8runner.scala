@@ -110,7 +110,7 @@ class parser(filename:String) {
   		if(line.matches(".*Long.*"))
   			returnStr = parseLength(line);
 
-  		println(returnStr)
+  		//println(returnStr)
   		returnStr
   	}
 
@@ -174,7 +174,7 @@ class parser(filename:String) {
 		  				factorList(factorLen) = exprSplit(n+2) + "[" + exprSplit(n) + "]"
 		  				factorLen += 1
 		  			}
-		  			else {
+		  			else if (n-1>=0 && !exprSplit(n-1).matches("(T|t)imes")) {
 		  				factorList(factorLen) = i
 		  				factorLen += 1
 		  			}
@@ -396,7 +396,7 @@ class evaluator{
 
 		while(control < instructions.length && instructions(control)!=null){
 			
-			println(instructions(control));
+			//println(instructions(control));
 			var state_var = evaluate(instructions(control).split("`"));
 
 			//1=loop,2=endloop
