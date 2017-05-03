@@ -48,6 +48,9 @@ object parser extends App {
     	if(line.matches(".*(\\?)"))
     		println(parseIfStatement(line));
 
+    	if(line.matches(".*(\\.)"))
+    		println(parseElseStatement(line));
+
     	if(line.matches(".*(W|w)hile.*"))
   			println(parseWhile(line));
 
@@ -184,18 +187,22 @@ object parser extends App {
 
 	def parseEndblock(line:String) : String = {
 	  	//this doesn't really do anything yet because it's just an endblock
-	  	"ifendblock"
+	  	"endif"
 	}
 
 	def parseWEndblock(line:String) : String = {
-		"whileendlbock"
+		"endwhile"
 	}
 
 	def parseIfStatement(line:String) : String = {
 	  	val lineSplit = line.split(" ")
 	  	val varName = lineSplit(lineSplit.length-1).split("\\?")(0)
 	  	//will just have to pass the boolean variable name to the evaluator which will handle the rest
-	  	("If statement bool :: " + varName)
+	  	("if," + varName)
+	}
+
+	def parseElseStatement(line:String) : String = {
+		"else"
 	}
 
 	def parseWhile(line:String) : String = {
@@ -206,7 +213,7 @@ object parser extends App {
 	  	}
 	  	val varName = lineSplit(temp+1)
 	  	//same as with If Statement
-	  	("While statement bool :: " + varName)
+	  	("while," + varName)
 	}
 	def parseListDeclaration(line:String) : String = {
 	  	val lineSplit = line.split(" ")
