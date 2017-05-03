@@ -344,15 +344,12 @@ class evaluator{
 	}*/
 	def startEval(commands:String) {
 
-		var control:Int = 0;
-		var loop_start:Int = 0;
-		var while_condition:String = "";
-		var if_condition:String = "";
 
 		val instructions = commands.split("!")
 
 		while(control < instructions.length && instructions(control)!=null){
 			
+			//println(instructions(control));
 			var state_var = evaluate(instructions(control).split(","));
 
 			//1=loop,2=endloop
@@ -544,6 +541,8 @@ class evaluator{
 	def eval_while(tokens:Array[String]) : Int ={
 
 		while_condition = tokens(1);
+
+		//println("while cond is" + tokens(1));
 
 
 		0;
