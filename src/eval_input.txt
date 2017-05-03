@@ -1,3 +1,7 @@
 declare_var,Coke,String
 assign_var,Hello World!,Coke
-write_line,Coke
+declare_var,Cokes,String
+assign_var,Hello World!,Cokes
+declare_var,isitequal,Boolean
+equal_to,Coke,Cokes,isitequal
+write_line,isitequal
