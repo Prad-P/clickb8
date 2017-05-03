@@ -170,12 +170,18 @@ class parser(filename:String) {
 	  		while (n < exprSplit.length) {
 	  			val i:String = exprSplit(n)
 		  		if((factorLen < 2) && varNameList.contains(i)) {
-		  			factorList(factorLen) = i
-		  			factorLen += 1
+		  			if(n+1 < exprSplit.length && exprSplit(n+1).matches("(T|t)imes")) {
+		  				factorList(factorLen) = exprSplit(n+2) + "[" + exprSplit(n) + "]"
+		  				factorLen += 1
+		  			}
+		  			else {
+		  				factorList(factorLen) = i
+		  				factorLen += 1
+		  			}
 		  		}
 		  		if((factorLen < 2) && i.matches("\\d+")) {
 		  			if(exprSplit(n+1).matches("(T|t)imes")) {
-		  				factorList(factorLen) = exprSplit(n+2) + ":" + exprSplit(n)
+		  				factorList(factorLen) = exprSplit(n+2) + "[" + exprSplit(n) + "]"
 		  				factorLen += 1
 		  			}
 		  			else {
