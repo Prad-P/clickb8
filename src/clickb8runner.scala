@@ -151,7 +151,7 @@ class parser(filename:String) {
 	  	val pExpr = parseExpression(postColon(1))
 	  	if(ind >= 0) {
 	  		//("assign_list," + varName + "," + pExpr + "," + ind);
-	  		(pExpr + "`" + varName + "`" + ind)
+	  		(pExpr + "`" + varName + "[" + ind + "]")
 	  	}
 	  	else {
 	  		(pExpr + "`" + varName)
@@ -282,6 +282,8 @@ class parser(filename:String) {
 	  	val listName = lineSplit(2)
 	  	val upType = lineSplit(3)
 	  	var listType = ""
+	  	varNameList(arrIter) = listName
+	  	arrIter += 1
 	  	upType match {
 	  		case "Is" => listType = "Int"
 	  		case "Brings" => listType = "Boolean"
@@ -394,7 +396,7 @@ class evaluator{
 
 		while(control < instructions.length && instructions(control)!=null){
 			
-			//println(instructions(control));
+			println(instructions(control));
 			var state_var = evaluate(instructions(control).split("`"));
 
 			//1=loop,2=endloop
@@ -413,7 +415,7 @@ class evaluator{
 
 					while(instructions(control).split("`")(0) != "endif" && instructions(control).split("`")(0) != "else"){
 						
-						println(instructions(control).split("`")(0));
+						//println(instructions(control).split("`")(0));
 
 						state_var = evaluate(instructions(control).split("`"));
 						control+=1;
@@ -479,6 +481,8 @@ class evaluator{
 
 		var char_array:Array[String] = getStr(tokens(1)).sliding(1).toArray;
 
+		//println(char_array.mkstring(" "))
+
 		string_lists(tokens(2)) = char_array;
 
 		0;
@@ -502,6 +506,7 @@ class evaluator{
 	def equal_to(tokens:Array[String]) : Int ={
 
 		var boolean_str:String = "false";
+		//println(tokens(1) + " " + tokens(2))
 
 		if(type_map(tokens(1))=="Int" && type_map(tokens(2))=="Int"){
 			boolean_str = (getInt(tokens(1)) == getInt(tokens(2))).toString;
@@ -510,7 +515,7 @@ class evaluator{
 			boolean_str = (getBool(tokens(1)) == getBool(tokens(2))).toString;
 		}
 		else{
-			boolean_str = (getStr(tokens(1)) == getStr(tokens(2))).toString;
+			boolean_str = (getStr(tokens(1)).equals(getStr(tokens(2)))).toString;
 		}
 
 		var var_name:String = tokens(3);
@@ -775,7 +780,7 @@ class evaluator{
 			var list_name:String = x.split('[')(0)
 			var index:String = (x.substring(x.indexOf("[") + 1, x.indexOf("]")));
 			if(integer_vars.contains(index)){
-				ret = string_vars(index);
+				ret = (string_lists(list_name))(getInt(index));
 			}
 			else{
 				ret = (string_lists(list_name))(index.toInt);
@@ -786,6 +791,7 @@ class evaluator{
 		else
 			ret = x;
 
+		//println(ret)
 		ret;
 	}
 
