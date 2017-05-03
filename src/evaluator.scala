@@ -6,6 +6,7 @@ import scala.language.implicitConversions
 object evaluator extends App{
 
 	//State:
+	val MAX_LINES = 1024;
 
 	//maps var names to types
 	var type_map = mutable.Map.empty[String, String];
@@ -22,7 +23,13 @@ object evaluator extends App{
 	//End of state
 
 
-	var input_file:String = null; 
+	var input_file:String = null;
+	var instructions: Array[String] = new Array(MAX_LINES);
+
+	//control variable detects changes in control flow (loops,conditionals)
+	var control:Int = 0;
+	var loop_start:Int = 0; 
+	var condition:String = "";
 
 	try{
     	input_file = args(0);
@@ -32,8 +39,26 @@ object evaluator extends App{
 	}
 	
 	for (line <- Source.fromFile(input_file).getLines()){
-		var tokens:Array[String] = line.split(",");
-		evaluate(tokens);
+ 		instructions(control) = (line);
+ 		control+=1;
+ 		println(line);
+
+	}
+
+	control = 0;
+
+	while(control < instructions.length && instructions(control)!=null){
+		
+		var state_var = evaluate(instructions(control).split(","));
+
+		if(state_var == 1)
+			loop_start=control;
+		else if(state_var == 2){
+			if(boolean_vars(condition) == true)
+				control = loop_start;
+		}
+
+		control+=1;
 	}
 
 	//tokens(0) is the function
@@ -48,7 +73,77 @@ object evaluator extends App{
 		case "assign_var" => assign_var(tokens);0;
 		case "read_line" => read_line(tokens);0;
 		case "write_line" => write_line(tokens);0;
+		case "while" => eval_while(tokens);1;
+		case "endwhile" => 2;
+		case "not" => eval_not(tokens);0;
+		case "or" => eval_or(tokens);0;
+		case "and" => eval_and(tokens);0;
 		case _ => println("no match :(");-1;
+	}
+
+	//conditionals tokens(1),tokens(2) bool vals, tokens(3) = storage / for not tokens(2) = storage
+	def eval_or(tokens:Array[String]) : Int ={
+
+		var boolean:Boolean = getBool(tokens(1)) || getBool(tokens(2));
+		var var_name:String = tokens(3);
+
+		var boolean_str:String = (boolean).toString;
+
+		if(!var_name.contains('['))
+			assign_var(Array(" ",var_name,boolean_str));
+		else{
+			var list_name:String = var_name.split('[')(0)
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+		}
+		0;
+
+	}
+
+	def eval_and(tokens:Array[String]) : Int ={
+
+		var boolean:Boolean = getBool(tokens(1)) && getBool(tokens(2));
+		var var_name:String = tokens(3);
+
+		var boolean_str:String = (boolean).toString;
+
+		if(!var_name.contains('['))
+			assign_var(Array(" ",var_name,boolean_str));
+		else{
+			var list_name:String = var_name.split('[')(0)
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+		}
+		0;
+
+	}
+
+	def eval_not(tokens:Array[String]) : Int ={
+
+		var boolean:Boolean = getBool(tokens(1));
+		var var_name:String = tokens(2);
+
+		var boolean_str:String = (!boolean).toString;
+
+		if(!var_name.contains('['))
+			assign_var(Array(" ",var_name,boolean_str));
+		else{
+			var list_name:String = var_name.split('[')(0)
+			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
+			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+		}
+		0;
+
+	}
+
+	//tokens(1) == boolean var, if true loop
+	def eval_while(tokens:Array[String]) : Int ={
+
+		condition = tokens(1);
+
+
+		0;
+
 	}
 
 	//User IO functions token(1) : String var name
