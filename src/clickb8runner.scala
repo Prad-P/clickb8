@@ -104,6 +104,13 @@ class parser(filename:String) {
   			//println(parseReadLine(line));
   			returnStr = parseReadLine(line);
 
+  		if(line.matches(".*Break(s)*.*"))
+  			returnStr = parseTokenize(line);
+
+  		if(line.matches(".*Long.*"))
+  			returnStr = parseLength(line);
+
+  		println(returnStr)
   		returnStr
   	}
 
@@ -298,6 +305,38 @@ class parser(filename:String) {
 	  	val varName = lineSplit(temp-1)
 	  	//gotta do something with the variable name but for now I'm just gonna return it as a string
 	  	("read_line`" + varName)
+	}
+
+	def parseTokenize(line:String) : String = {
+		val lineSplit = line.split(" ")
+		var varNames = new Array[String](2)
+		var ind = 0
+		var temp = 0
+		while(temp < lineSplit.length) {
+			if(varNameList.contains(lineSplit(temp))) {
+				varNames(ind) = lineSplit(temp)
+				ind += 1
+			}
+			temp += 1
+		}
+		//varName = lineSplit(temp)
+		("tokenize`" + varNames(0) + "`" + varNames(1))
+	}
+
+	def parseLength(line:String) : String = {
+		val lineSplit = line.split(" ")
+		var varNames = new Array[String](2)
+		var ind = 0
+		var temp = 0
+		while(temp < lineSplit.length) {
+			if(varNameList.contains(lineSplit(temp))) {
+				varNames(ind) = lineSplit(temp)
+				ind += 1
+			}
+			temp += 1
+		}
+		//varName = lineSplit(temp)
+		("length`" + varNames(0) + "`" + varNames(1))
 	}
 }
 

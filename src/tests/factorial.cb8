@@ -1,11 +1,11 @@
 Here's Why Beef Is the new Super Food
-Beef: 10 pictures that will make you want a hamburger right now!
+Here's what the world's greatest chef of Beef Thinks of this new slider fad
 Ground Beef: 1 more reason to Add to the list of things that make Beef great
 Twenty years on, Jason Alexander explains Why Seinfeld Brings so many laughs, even today
 Seinfeld: Fifteen pics Sitcom junkies will LOVE to see!
 Six Subway ads that show Why Fogle Is still a hero to many
 Jared Fogle: The 1 piece of evidence that show he is innocent
-Why Troops Is deserve all the love this Christmas
+Why Troops Is getting all the love this Christmas
 The Troops: the 1 thing we should all be greatful for this Thanksgiving
 What Julie Dreyfus was up to While Seinfeld was off the air
 Fogle: Fogle has more in Common with the Troops than you might think
@@ -13,19 +13,3 @@ Troops: Troops Add 1 more thing to the list of reasons that we love them
 Ten pics of Seinfeld: the Troops who look at this will cry more than their Worst Beef with ISIS
 This kid stood up to his bullies at school; you won't believe what happens next!
 Fogle says that he may get parole very soon and we can't wait!
-
-//declare_var,Beef,Int
-//assign_var,Beef,10
-//assign_var,Beef,1,add,Beef
-//declare_var,Seinfeld,Boolean
-//assign_var,Seinfeld,true
-//declare_var,Fogle,Int
-//assign_var,Fogle,1
-//declare_var,Troops,Int
-//assign_var,Troops,1
-//while,Seinfeld
-//assign_var,Fogle,Fogle,mult,Troops
-//assign_var,Troops,Troops,add,1
-//assign_var,Seinfeld,Troops,lessThan,Beef
-//endwhile
-//write_line,Fogle
