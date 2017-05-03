@@ -417,8 +417,16 @@ class evaluator{
 		case "else" => 0;
 		case "endif" => eval_endif(tokens);0;
 		case "tokenize" =>eval_tokenize(tokens);0;
+		case "length" =>eval_length(tokens);0;
 
 		case _ => println("no match :(");-1;
+	}
+
+	//length tokens(1)=string var o literal tokens(2)=int storage
+	def eval_length(tokens:Array[String]) : Int ={
+
+		integer_vars(tokens(2)) = getStr(tokens(1)).length();
+		0;
 	}
 
 	//tokenizer tokens(1)=string var or literals tokens(2)=list of strings that will store our chars
