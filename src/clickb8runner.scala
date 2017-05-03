@@ -744,7 +744,7 @@ class evaluator{
 		var ret:Int = -1;
 
 
-		if(isAllDigits(x) || x(0)=='-' && isAllDigits(x.substring(1))
+		if(isAllDigits(x) || x(0)=='-' && isAllDigits(x.substring(1)))
 			ret = x.toInt;
 		else if(x.contains('[')){
 			var list_name:String = x.split('[')(0)
