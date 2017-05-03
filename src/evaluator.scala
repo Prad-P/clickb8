@@ -138,11 +138,11 @@ object evaluator extends App{
 		var var_name:String = tokens(3);
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,boolean_str));
+			assign_var(Array(" ",boolean_str,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+			assign_list(Array(" ",boolean_str,var_name.split('[')(0),index));
 		}
 		0;
 		
@@ -154,11 +154,11 @@ object evaluator extends App{
 		var var_name:String = tokens(3);
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,boolean_str));
+			assign_var(Array(" ",boolean_str,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+			assign_list(Array(" ",boolean_str,var_name.split('[')(0),index));
 		}
 		0;
 		
@@ -170,11 +170,11 @@ object evaluator extends App{
 		var var_name:String = tokens(3);
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,boolean_str));
+			assign_var(Array(" ",boolean_str,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+			assign_list(Array(" ",boolean_str,var_name.split('[')(0),index));
 		}
 		0;
 		
@@ -189,11 +189,11 @@ object evaluator extends App{
 		var boolean_str:String = (boolean).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,boolean_str));
+			assign_var(Array(" ",boolean_str,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+			assign_list(Array(" ",boolean_str,var_name.split('[')(0),index));
 		}
 		0;
 
@@ -207,11 +207,11 @@ object evaluator extends App{
 		var boolean_str:String = (boolean).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,boolean_str));
+			assign_var(Array(" ",boolean_str,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+			assign_list(Array(" ",boolean_str,var_name.split('[')(0),index));
 		}
 		0;
 
@@ -225,11 +225,11 @@ object evaluator extends App{
 		var boolean_str:String = (!boolean).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,boolean_str));
+			assign_var(Array(" ",boolean_str,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+			assign_list(Array(" ",boolean_str,var_name.split('[')(0),index));
 		}
 		0;
 
@@ -306,11 +306,11 @@ object evaluator extends App{
 		var sum:String = (getInt(tokens(1)) + getInt(tokens(2))).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,sum));
+			assign_var(Array(" ",sum,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),sum,index));
+			assign_list(Array(" ",sum,var_name.split('[')(0),index));
 		}
 		sum.toInt;
 	}
@@ -322,11 +322,11 @@ object evaluator extends App{
 		var diff:String = (getInt(tokens(1)) - getInt(tokens(2))).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,diff));
+			assign_var(Array(" ",diff,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),diff,index));
+			assign_list(Array(" ",diff,var_name.split('[')(0),index));
 		}
 		diff.toInt;
 	}
@@ -338,11 +338,11 @@ object evaluator extends App{
 		var product:String = (getInt(tokens(1)) * getInt(tokens(2))).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,product));
+			assign_var(Array(" ",product,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),product,index));
+			assign_list(Array(" ",product,var_name.split('[')(0),index));
 		}
 		product.toInt;
 	}
@@ -354,11 +354,11 @@ object evaluator extends App{
 		var quotient:String = (getInt(tokens(1)) / getInt(tokens(2))).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,quotient));
+			assign_var(Array(" ",quotient,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),quotient,index));
+			assign_list(Array(" ",quotient,var_name.split('[')(0),index));
 		}
 		quotient.toInt;
 	}
