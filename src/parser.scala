@@ -115,71 +115,77 @@ object parser extends App {
 	  	var factorLen = 0
 	  	var operator:String = null
 	  	var n = 0
-	  	//exprSplit.foreach { i:String =>
-  		while (n < exprSplit.length) {
-  			val i:String = exprSplit(n)
-	  		if((factorLen < 2) && varNameList.contains(i)) {
-	  			factorList(factorLen) = i
-	  			factorLen += 1
-	  		}
-	  		if((factorLen < 2) && i.matches("\\d+")) {
-	  			if(exprSplit(n+1).matches("(T|t)imes")) {
-	  				factorList(factorLen) = exprSplit(n+2) + ":" + exprSplit(n)
-	  				factorLen += 1
-	  			}
-	  			else {
-	  				factorList(factorLen) = i
-	  				factorLen += 1
-	  			}
-	  		}
-	  		if((factorLen < 2) && i.matches("LOVE(S)*")) {
-	  			factorList(factorLen) = "true"
-	  			factorLen += 1
-	  		}
-	  		if((factorLen < 2) && i.matches("HATE(S)*")) {
-	  			factorList(factorLen) = "false"
-	  			factorLen += 1
-	  		}
-	  		if(i.matches("Add")) {
-	  			operator = "add"
-	  		}
-	  		if(i.matches("Stop")) {
-	  			operator = "sub"
-	  		}
-	  		if(i.matches("Common")) {
-	  			operator = "mult"
-	  		}
-	  		if(i.matches("Seperates")) {
-	  			operator = "div"
-	  		}
-	  		if(i.matches("And")) {
-	  			operator = "and"
-	  		}
-	  		if(i.matches("Or")) {
-	  			operator = "or"
-	  		}
-	  		if(i.matches("Not")) {
-	  			operator = "not"
-	  		}
-	  		if(i.matches("Greatest")) {
-	  			operator = "greaterThan"
-	  		}
-	  		if(i.matches("Worst")) {
-	  			operator = "lessThan"
-	  		}
-	  		if(i.matches("As")) {
-	  			operator = "="
-	  		}
-	  		n+=1
-	  	}
 	  	var token = ""
+	  	//exprSplit.foreach { i:String =>
+	  	if(!expr.matches(" .*\".*\".*")) {
+	  		while (n < exprSplit.length) {
+	  			val i:String = exprSplit(n)
+		  		if((factorLen < 2) && varNameList.contains(i)) {
+		  			factorList(factorLen) = i
+		  			factorLen += 1
+		  		}
+		  		if((factorLen < 2) && i.matches("\\d+")) {
+		  			if(exprSplit(n+1).matches("(T|t)imes")) {
+		  				factorList(factorLen) = exprSplit(n+2) + ":" + exprSplit(n)
+		  				factorLen += 1
+		  			}
+		  			else {
+		  				factorList(factorLen) = i
+		  				factorLen += 1
+		  			}
+		  		}
+		  		if((factorLen < 2) && i.matches("LOVE(S)*")) {
+		  			factorList(factorLen) = "true"
+		  			factorLen += 1
+		  		}
+		  		if((factorLen < 2) && i.matches("HATE(S)*")) {
+		  			factorList(factorLen) = "false"
+		  			factorLen += 1
+		  		}
+		  		if(i.matches("Add")) {
+		  			operator = "add"
+		  		}
+		  		if(i.matches("Stop")) {
+		  			operator = "sub"
+		  		}
+		  		if(i.matches("Common")) {
+		  			operator = "mult"
+		  		}
+		  		if(i.matches("Seperates")) {
+		  			operator = "div"
+		  		}
+		  		if(i.matches("And")) {
+		  			operator = "and"
+		  		}
+		  		if(i.matches("Or")) {
+		  			operator = "or"
+		  		}
+		  		if(i.matches("Not")) {
+		  			operator = "not"
+		  		}
+		  		if(i.matches("Greatest")) {
+		  			operator = "greaterThan"
+		  		}
+		  		if(i.matches("Worst")) {
+		  			operator = "lessThan"
+		  		}
+		  		if(i.matches("As")) {
+		  			operator = "="
+		  		}
+		  		n+=1
+		  	}
+	  	}
+	  	else {
+	  		val stringExtract = expr.split("\"")
+	  		token = stringExtract(1)
+	  	}
 	  	if(operator != null && operator.matches("not")) {
 	  		token = operator + "," + factorList(0)
 	  	}
 	  	else if(factorLen == 2) {
 	  		token = factorList(0) + "," + operator + "," + factorList(1)
 	  	}
-	  	else {
+	  	else if(factorList(0) != null) {
 	  		token = factorList(0)
 	  	}
 	  	token
