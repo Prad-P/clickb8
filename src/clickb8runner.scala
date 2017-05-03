@@ -443,11 +443,11 @@ class evaluator{
 		var var_name:String = tokens(3);
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,boolean_str));
+			assign_var(Array(" ",boolean_str,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+			assign_list(Array(" ",boolean_str,var_name.split('[')(0),index));
 		}
 		0;
 		
@@ -459,11 +459,11 @@ class evaluator{
 		var var_name:String = tokens(3);
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,boolean_str));
+			assign_var(Array(" ",boolean_str,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+			assign_list(Array(" ",boolean_str,var_name.split('[')(0),index));
 		}
 		0;
 		
@@ -475,11 +475,11 @@ class evaluator{
 		var var_name:String = tokens(3);
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,boolean_str));
+			assign_var(Array(" ",boolean_str,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+			assign_list(Array(" ",boolean_str,var_name.split('[')(0),index));
 		}
 		0;
 		
@@ -494,11 +494,11 @@ class evaluator{
 		var boolean_str:String = (boolean).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,boolean_str));
+			assign_var(Array(" ",boolean_str,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+			assign_list(Array(" ",boolean_str,var_name.split('[')(0),index));
 		}
 		0;
 
@@ -512,11 +512,11 @@ class evaluator{
 		var boolean_str:String = (boolean).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,boolean_str));
+			assign_var(Array(" ",boolean_str,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+			assign_list(Array(" ",boolean_str,var_name.split('[')(0),index));
 		}
 		0;
 
@@ -530,11 +530,11 @@ class evaluator{
 		var boolean_str:String = (!boolean).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,boolean_str));
+			assign_var(Array(" ",boolean_str,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),boolean_str,index));
+			assign_list(Array(" ",boolean_str,var_name.split('[')(0),index));
 		}
 		0;
 
@@ -585,16 +585,16 @@ class evaluator{
 		case _ => println("no match :(");-1;
 	}
 
-	//Direct assignments: tokens(1) = listname, tokens(2) = value tokens(3) = index
-	def assign_list(tokens:Array[String]): Int = type_map(tokens(1)) match{
+	//Direct assignments: tokens(1) = value, tokens(2) = istname tokens(3) = index
+	def assign_list(tokens:Array[String]): Int = type_map(tokens(2)) match{
 
-		case "IntList" => integer_lists(tokens(1))(tokens(3).toInt) = getInt(tokens(2));0;
-		case "BooleanList" => (boolean_lists(tokens(1)))(tokens(3).toInt) = getBool(tokens(2));0;
-		case "StringList" => (string_lists(tokens(1)))(tokens(3).toInt) = getStr(tokens(2));0;
+		case "IntList" => integer_lists(tokens(2))(tokens(3).toInt) = getInt(tokens(1));0;
+		case "BooleanList" => (boolean_lists(tokens(2)))(tokens(3).toInt) = getBool(tokens(1));0;
+		case "StringList" => (string_lists(tokens(2)))(tokens(3).toInt) = getStr(tokens(1));0;
 		case _ => println("no match :(");-1;
 	}
 
-	def assign_var(tokens:Array[String]): Int = type_map(tokens(1)) match{
+	def assign_var(tokens:Array[String]): Int = type_map(tokens(2)) match{
 
 		case "Int" => integer_vars(tokens(2)) = getInt(tokens(1));0;
 		case "Boolean" => boolean_vars(tokens(2)) = getBool(tokens(1));0;
@@ -611,11 +611,11 @@ class evaluator{
 		var sum:String = (getInt(tokens(1)) + getInt(tokens(2))).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,sum));
+			assign_var(Array(" ",sum,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),sum,index));
+			assign_list(Array(" ",sum,var_name.split('[')(0),index));
 		}
 		sum.toInt;
 	}
@@ -627,11 +627,11 @@ class evaluator{
 		var diff:String = (getInt(tokens(1)) - getInt(tokens(2))).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,diff));
+			assign_var(Array(" ",diff,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),diff,index));
+			assign_list(Array(" ",diff,var_name.split('[')(0),index));
 		}
 		diff.toInt;
 	}
@@ -643,11 +643,11 @@ class evaluator{
 		var product:String = (getInt(tokens(1)) * getInt(tokens(2))).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,product));
+			assign_var(Array(" ",product,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),product,index));
+			assign_list(Array(" ",product,var_name.split('[')(0),index));
 		}
 		product.toInt;
 	}
@@ -659,11 +659,11 @@ class evaluator{
 		var quotient:String = (getInt(tokens(1)) / getInt(tokens(2))).toString;
 
 		if(!var_name.contains('['))
-			assign_var(Array(" ",var_name,quotient));
+			assign_var(Array(" ",quotient,var_name));
 		else{
 			var list_name:String = var_name.split('[')(0)
 			var index:String = (var_name.substring(var_name.indexOf("[") + 1, var_name.indexOf("]")));
-			assign_list(Array(" ",var_name.split('[')(0),quotient,index));
+			assign_list(Array(" ",quotient,var_name.split('[')(0),index));
 		}
 		quotient.toInt;
 	}
@@ -678,8 +678,13 @@ class evaluator{
 			ret = x.toInt;
 		else if(x.contains('[')){
 			var list_name:String = x.split('[')(0)
-			var index:Int = (x.substring(x.indexOf("[") + 1, x.indexOf("]"))).toInt;
-			ret = (integer_lists(list_name))(index);
+			var index:String = (x.substring(x.indexOf("[") + 1, x.indexOf("]")));
+			if(integer_vars.contains(index)){
+				ret = integer_vars(index);
+			}
+			else{
+				ret = (integer_lists(list_name))(index.toInt);
+			}
 		}
 		else
 			ret = integer_vars(x);
@@ -692,8 +697,13 @@ class evaluator{
 
 		if(x.contains('[')){
 			var list_name:String = x.split('[')(0)
-			var index:Int = (x.substring(x.indexOf("[") + 1, x.indexOf("]"))).toInt;
-			ret = (string_lists(list_name))(index);
+			var index:String = (x.substring(x.indexOf("[") + 1, x.indexOf("]")));
+			if(integer_vars.contains(index)){
+				ret = string_vars(index);
+			}
+			else{
+				ret = (string_lists(list_name))(index.toInt);
+			}
 		}
 		else if(string_vars.contains(x))
 			ret = string_vars(x);
@@ -709,8 +719,13 @@ class evaluator{
 
 		if(x.contains('[')){
 			var list_name:String = x.split('[')(0)
-			var index:Int = (x.substring(x.indexOf("[") + 1, x.indexOf("]"))).toInt;
-			ret = (boolean_lists(list_name))(index);
+			var index:String = (x.substring(x.indexOf("[") + 1, x.indexOf("]")));
+			if(integer_vars.contains(index)){
+				ret = boolean_vars(index);
+			}
+			else{
+				ret = (boolean_lists(list_name))(index.toInt);
+			}
 		}
 		else if(boolean_vars.contains(x))
 			ret = boolean_vars(x);
