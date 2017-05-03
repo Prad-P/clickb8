@@ -280,20 +280,20 @@ object evaluator extends App{
 		case _ => println("no match :(");-1;
 	}
 
-	//Direct assignments: tokens(1) = listname, tokens(2) = value tokens(3) = index
-	def assign_list(tokens:Array[String]): Int = type_map(tokens(1)) match{
+	//Direct assignments: tokens(1) = value, tokens(2) = istname tokens(3) = index
+	def assign_list(tokens:Array[String]): Int = type_map(tokens(2)) match{
 
-		case "IntList" => integer_lists(tokens(1))(tokens(3).toInt) = getInt(tokens(2));0;
-		case "BooleanList" => (boolean_lists(tokens(1)))(tokens(3).toInt) = getBool(tokens(2));0;
-		case "StringList" => (string_lists(tokens(1)))(tokens(3).toInt) = getStr(tokens(2));0;
+		case "IntList" => integer_lists(tokens(2))(tokens(3).toInt) = getInt(tokens(1));0;
+		case "BooleanList" => (boolean_lists(tokens(2)))(tokens(3).toInt) = getBool(tokens(1));0;
+		case "StringList" => (string_lists(tokens(2)))(tokens(3).toInt) = getStr(tokens(1));0;
 		case _ => println("no match :(");-1;
 	}
 
-	def assign_var(tokens:Array[String]): Int = type_map(tokens(1)) match{
+	def assign_var(tokens:Array[String]): Int = type_map(tokens(2)) match{
 
-		case "Int" => integer_vars(tokens(1)) = getInt(tokens(2));0;
-		case "Boolean" => boolean_vars(tokens(1)) = getBool(tokens(2));0;
-		case "String" => string_vars(tokens(1)) = getStr(tokens(2));0;
+		case "Int" => integer_vars(tokens(2)) = getInt(tokens(1));0;
+		case "Boolean" => boolean_vars(tokens(2)) = getBool(tokens(1));0;
+		case "String" => string_vars(tokens(2)) = getStr(tokens(1));0;
 		case _ => println("no match :(");-1;
 	}
 
@@ -373,8 +373,13 @@ object evaluator extends App{
 			ret = x.toInt;
 		else if(x.contains('[')){
 			var list_name:String = x.split('[')(0)
-			var index:Int = (x.substring(x.indexOf("[") + 1, x.indexOf("]"))).toInt;
-			ret = (integer_lists(list_name))(index);
+			var index:String = (x.substring(x.indexOf("[") + 1, x.indexOf("]")));
+			if(integer_vars.contains(index)){
+				ret = integer_vars(index);
+			}
+			else{
+				ret = (integer_lists(list_name))(index.toInt);
+			}
 		}
 		else
 			ret = integer_vars(x);
@@ -387,8 +392,13 @@ object evaluator extends App{
 
 		if(x.contains('[')){
 			var list_name:String = x.split('[')(0)
-			var index:Int = (x.substring(x.indexOf("[") + 1, x.indexOf("]"))).toInt;
-			ret = (string_lists(list_name))(index);
+			var index:String = (x.substring(x.indexOf("[") + 1, x.indexOf("]")));
+			if(integer_vars.contains(index)){
+				ret = string_vars(index);
+			}
+			else{
+				ret = (string_lists(list_name))(index.toInt);
+			}
 		}
 		else if(string_vars.contains(x))
 			ret = string_vars(x);
@@ -404,8 +414,13 @@ object evaluator extends App{
 
 		if(x.contains('[')){
 			var list_name:String = x.split('[')(0)
-			var index:Int = (x.substring(x.indexOf("[") + 1, x.indexOf("]"))).toInt;
-			ret = (boolean_lists(list_name))(index);
+			var index:String = (x.substring(x.indexOf("[") + 1, x.indexOf("]")));
+			if(integer_vars.contains(index)){
+				ret = boolean_vars(index);
+			}
+			else{
+				ret = (boolean_lists(list_name))(index.toInt);
+			}
 		}
 		else if(boolean_vars.contains(x))
 			ret = boolean_vars(x);

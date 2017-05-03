@@ -1,11 +1,3 @@
-declare_var,Coke,Int
-assign_var,Coke,7
-declare_var,Cokes,Int
-assign_var,Cokes,6
-declare_var,printer,Boolean
-lesser_than,Coke,Cokes,printer
-if,printer
+declare_var,Coke,String
+assign_var,Hello World!,Coke
 write_line,Coke
-else
-write_line,Cokes
-endif
