@@ -396,7 +396,7 @@ class evaluator{
 
 		while(control < instructions.length && instructions(control)!=null){
 			
-			//println(instructions(control));
+			//=println(instructions(control));
 			var state_var = evaluate(instructions(control).split("`"));
 
 			//1=loop,2=endloop
